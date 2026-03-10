@@ -9,14 +9,14 @@ router.get(
   '/jobs',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10));
-      const limit = Math.min(50, Math.max(1, parseInt(String(req.query.limit ?? '20'), 10)));
+      const page = Math.max(1, Number.parseInt(String(req.query.page ?? '1'), 10));
+      const limit = Math.min(50, Math.max(1, Number.parseInt(String(req.query.limit ?? '20'), 10)));
 
       const q = req.query.q as string | undefined;
       const jobType = req.query.jobType as JobType | undefined;
       const location = req.query.location as string | undefined;
-      const salaryMin = req.query.salaryMin ? parseInt(String(req.query.salaryMin), 10) : undefined;
-      const salaryMax = req.query.salaryMax ? parseInt(String(req.query.salaryMax), 10) : undefined;
+      const salaryMin = req.query.salaryMin ? Number.parseInt(String(req.query.salaryMin), 10) : undefined;
+      const salaryMax = req.query.salaryMax ? Number.parseInt(String(req.query.salaryMax), 10) : undefined;
       const skillsParam = req.query.skills as string | undefined;
       const skills = skillsParam ? skillsParam.split(',').map((s) => s.trim()).filter(Boolean) : undefined;
 

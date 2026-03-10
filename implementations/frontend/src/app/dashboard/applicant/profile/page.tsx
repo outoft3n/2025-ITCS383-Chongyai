@@ -90,8 +90,8 @@ export default function ApplicantProfilePage() {
       await api.post('/payments/confirm', {
         paymentId,
         cardNumber: payForm.cardNumber,
-        expiryMonth: parseInt(payForm.expiryMonth, 10),
-        expiryYear: parseInt(payForm.expiryYear, 10),
+        expiryMonth: Number.parseInt(payForm.expiryMonth, 10),
+        expiryYear: Number.parseInt(payForm.expiryYear, 10),
         cvv: payForm.cvv,
       });
       setPayModal(false);

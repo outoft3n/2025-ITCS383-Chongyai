@@ -77,7 +77,7 @@ app.use('/api/conference', conferenceRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-const PORT = parseInt(process.env.PORT ?? '4000', 10);
+const PORT = Number.parseInt(process.env.PORT ?? '4000', 10);
 
 const server = app.listen(PORT, () => {
   process.stdout.write(`Server running on port ${PORT}\n`);

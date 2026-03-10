@@ -66,8 +66,8 @@ router.get(
   requireRole(Role.APPLICANT),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10));
-      const limit = Math.min(50, Math.max(1, parseInt(String(req.query.limit ?? '20'), 10)));
+      const page = Math.max(1, Number.parseInt(String(req.query.page ?? '1'), 10));
+      const limit = Math.min(50, Math.max(1, Number.parseInt(String(req.query.limit ?? '20'), 10)));
 
       const [applications, total] = await prisma.$transaction([
         prisma.application.findMany({
@@ -112,8 +112,8 @@ router.get(
         return;
       }
 
-      const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10));
-      const limit = Math.min(50, Math.max(1, parseInt(String(req.query.limit ?? '20'), 10)));
+      const page = Math.max(1, Number.parseInt(String(req.query.page ?? '1'), 10));
+      const limit = Math.min(50, Math.max(1, Number.parseInt(String(req.query.limit ?? '20'), 10)));
 
       const [applications, total] = await prisma.$transaction([
         prisma.application.findMany({
@@ -149,8 +149,8 @@ router.get(
   requireRole(Role.RECRUITER, Role.ADMIN),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10));
-      const limit = Math.min(50, Math.max(1, parseInt(String(req.query.limit ?? '20'), 10)));
+      const page = Math.max(1, Number.parseInt(String(req.query.page ?? '1'), 10));
+      const limit = Math.min(50, Math.max(1, Number.parseInt(String(req.query.limit ?? '20'), 10)));
 
       const [applications, total] = await prisma.$transaction([
         prisma.application.findMany({
