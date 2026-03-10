@@ -313,6 +313,18 @@ Please replace the file with 'next.config.js' or 'next.config.mjs'.
 
 ---
 
+### Issue 9: Build Error - Type mismatch in `JobForm.tsx`
+
+**Problem:** Frontend build failed because `useForm` was inferring types from an incomplete `defaultValues` object, missing the `expiresAt` key.
+
+**Root Cause:** `useForm` was not explicitly typed with the `CreateJobForm` or schema, and `defaultValues` did not include a default for `expiresAt`, causing a type error when registering that field.
+
+**Fix:** 
+1. Explicitly typed `useForm` with `z.infer<typeof CreateJobSchema>`.
+2. Added `expiresAt` to the `defaultValues` object with proper date formatting for `datetime-local` input.
+
+---
+
 ---
 
 ## 📁 Final File Structure

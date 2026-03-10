@@ -40,7 +40,7 @@ export function JobForm({ defaultValues, onSubmit, isLoading, submitLabel = 'Pos
   const [skills, setSkills] = useState<string[]>(defaultValues?.skills ?? []);
   const [skillInput, setSkillInput] = useState('');
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof CreateJobSchema>>({
     resolver: zodResolver(CreateJobSchema),
     defaultValues: {
       title: defaultValues?.title ?? '',
@@ -50,6 +50,7 @@ export function JobForm({ defaultValues, onSubmit, isLoading, submitLabel = 'Pos
       jobType: defaultValues?.jobType ?? 'FULL_TIME',
       salaryMin: defaultValues?.salaryMin ?? undefined,
       salaryMax: defaultValues?.salaryMax ?? undefined,
+      expiresAt: defaultValues?.expiresAt ? new Date(defaultValues.expiresAt).toISOString().slice(0, 16) : '',
     },
   });
 
