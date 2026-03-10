@@ -192,6 +192,7 @@ export interface AuthUser {
   role: Role;
   firstName: string;
   lastName: string;
+  phone: string | null;
   isVerified: boolean;
   isPaid: boolean;
   profileImageUrl: string | null;

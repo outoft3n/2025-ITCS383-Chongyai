@@ -279,6 +279,18 @@ Please replace the file with 'next.config.js' or 'next.config.mjs'.
 
 ---
 
+### Issue 6: Build Error - Missing `phone` property in `AuthUser`
+
+**Problem:** Frontend build failed in `ApplicantProfilePage` because `AuthUser` type was missing the `phone` property.
+
+**Root Cause:** The `AuthUser` interface in `frontend/src/types/index.ts` didn't match the database model, and backend auth routes were not consistently returning the `phone` field.
+
+**Fix:** 
+1. Added `phone: string | null;` to `AuthUser` interface in `types/index.ts`.
+2. Updated `/api/auth/register` and `/api/auth/login` in `auth.routes.ts` to include `phone` in the Prisma select block.
+
+---
+
 ---
 
 ## 📁 Final File Structure
