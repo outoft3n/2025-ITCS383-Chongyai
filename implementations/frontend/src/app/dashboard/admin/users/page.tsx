@@ -35,7 +35,8 @@ export default function AdminUsersPage() {
       const params = new URLSearchParams({ page: String(page) });
       if (role) params.set('role', role);
       const res = await api.get<PaginatedResponse<User>>(`/users?${params}`);
-      setUsers(res.data.data);
+      const nonAdminUsers = res.data.data.filter(user => user.role !== 'ADMIN');
+      setUsers(nonAdminUsers);
       setPagination(res.data.pagination);
     } catch (err) {
       setError(getApiErrorMessage(err));

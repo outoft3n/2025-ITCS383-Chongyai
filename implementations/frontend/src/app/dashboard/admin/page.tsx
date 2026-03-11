@@ -27,7 +27,6 @@ export default function AdminDashboard() {
   const userChartData = [
     { label: 'Applicants', value: summary.users.applicants, color: 'bg-primary' },
     { label: 'Recruiters', value: summary.users.recruiters, color: 'bg-accent' },
-    { label: 'Admins', value: summary.users.admins, color: 'bg-blue-500' },
   ];
 
   const jobChartData = [
@@ -43,7 +42,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard title="Total Users" value={summary.users.total} icon={Users} color="orange" />
+        <StatsCard title="Total Users" value={summary.users.total-summary.users.admins} icon={Users} color="orange" />
         <StatsCard title="Active Jobs" value={summary.jobs.active} icon={Briefcase} color="yellow" />
         <StatsCard title="Applications" value={summary.applications.total} icon={FileText} color="blue" />
         <StatsCard

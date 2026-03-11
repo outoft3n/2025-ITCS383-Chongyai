@@ -1,0 +1,6 @@
+projectKey=chongyai
+serverUrl=http://localhost:9000
+serverVersion=26.3.0.120487
+dashboardUrl=http://localhost:9000/dashboard?id=chongyai
+ceTaskId=0c1b2a87-3f93-4f84-9b22-1b6fb1113130
+ceTaskUrl=http://localhost:9000/api/ce/task?id=0c1b2a87-3f93-4f84-9b22-1b6fb1113130

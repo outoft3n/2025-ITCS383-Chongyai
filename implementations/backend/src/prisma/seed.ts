@@ -208,15 +208,6 @@ async function main(): Promise<void> {
 }
 
 process.stdout.write('Seeding database...\n');
-// try {
-//   await main();
-//   process.stdout.write('Database seeded successfully.\n');
-// } catch (e) {
-//   process.stderr.write(`Seed error: ${String(e)}\n`);
-//   process.exit(1);
-// } finally {
-//   await prisma.$disconnect();
-// }
 main()
   .then(() => {
     console.log("Seeding completed.");

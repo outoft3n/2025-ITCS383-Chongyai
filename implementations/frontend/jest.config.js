@@ -15,8 +15,11 @@ const customJestConfig = {
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
-    '!src/app/**',
-    '!src/middleware.ts',
+    '!src/**/*.test.{ts,tsx}',
+    '!src/**/*.spec.{ts,tsx}',
+    '!src/app/layout.tsx',
+    '!src/app/not-found.tsx',
+    '!src/app/**/layout.tsx',
   ],
   coverageReporters: ['lcov', 'text', 'text-summary'],
   coverageDirectory: 'coverage',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import type { AuthUser } from '@/types';
@@ -35,9 +35,6 @@ describe('AuthContext', () => {
   beforeEach(() => {
     localStorage.clear();
     document.cookie = 'auth-token=; path=/; max-age=0';
-    // Mock window.location.href setter
-    delete (window as unknown as { location: unknown }).location;
-    (window as unknown as { location: { href: string } }).location = { href: '' };
   });
 
   it('throws error when useAuth used outside AuthProvider', () => {
@@ -105,7 +102,11 @@ describe('AuthContext', () => {
       </AuthProvider>,
     );
     await userEvent.click(screen.getByRole('button', { name: /login/i }));
+
+    // Suppress jsdom navigation error caused by window.location.href assignment
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     await userEvent.click(screen.getByRole('button', { name: /logout/i }));
+    spy.mockRestore();
 
     expect(screen.getByTestId('user')).toHaveTextContent('none');
     expect(screen.getByTestId('token')).toHaveTextContent('none');

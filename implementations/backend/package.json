@@ -11,7 +11,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage && node ./scripts/normalize-lcov.js",
     "db:generate": "prisma generate --schema=src/prisma/schema.prisma",
     "db:migrate": "prisma migrate dev --schema=src/prisma/schema.prisma",
     "db:push": "prisma db push --schema=src/prisma/schema.prisma",

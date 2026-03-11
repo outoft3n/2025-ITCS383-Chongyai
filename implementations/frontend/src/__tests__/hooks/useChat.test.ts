@@ -9,7 +9,6 @@ jest.mock('@/lib/api', () => ({
 }));
 const mockedApi = api as jest.Mocked<typeof api>;
 
-jest.useFakeTimers();
 
 const mockMessage: Message = {
   id: 'm1',
@@ -34,12 +33,11 @@ const botMessage: Message = {
 describe('useChat', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   afterEach(() => {
     jest.useRealTimers();
-    jest.useFakeTimers();
   });
 
   it('fetches chat history on mount', async () => {
@@ -67,6 +65,8 @@ describe('useChat', () => {
   });
 
   it('polls every 5 seconds', async () => {
+    jest.useFakeTimers();
+
     const response: ApiResponse<Message[]> = { success: true, data: [] };
     mockedApi.get = jest.fn().mockResolvedValue({ data: response });
     const { result } = renderHook(() => useChat('sess1'));
@@ -77,6 +77,8 @@ describe('useChat', () => {
     await waitFor(() => {
       expect((mockedApi.get as jest.Mock).mock.calls.length).toBeGreaterThan(callCount);
     });
+
+    jest.useRealTimers();
   });
 
   it('sendMessage adds user and bot messages', async () => {
