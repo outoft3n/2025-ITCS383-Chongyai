@@ -45,7 +45,7 @@ Deconstructs the Backend structure to confirm a clear separation of concerns.
 
 ## 3.3.1 API Application
 
-![alt text](images/C4_lv3_api.png)
+![alt text](images/image.png)
 
 
 ## 3.3.2 Internal Conference Service
