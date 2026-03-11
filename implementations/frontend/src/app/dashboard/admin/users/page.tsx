@@ -23,6 +23,12 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const getRoleBadgeVariant = (role: string) => {
+    if (role === 'ADMIN') return 'error';
+    if (role === 'RECRUITER') return 'yellow';
+    return 'orange';
+  };
+
   const fetchUsers = async (page = 1) => {
     setIsLoading(true);
     try {
@@ -78,7 +84,7 @@ export default function AdminUsersPage() {
                     <p className="text-gray-400 text-xs">{user.email}</p>
                   </td>
                   <td className="px-4 py-3">
-                    <Badge variant={user.role === 'ADMIN' ? 'error' : user.role === 'RECRUITER' ? 'yellow' : 'orange'}>
+                    <Badge variant={getRoleBadgeVariant(user.role)}>
                       {user.role}
                     </Badge>
                   </td>

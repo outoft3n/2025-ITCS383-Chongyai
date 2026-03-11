@@ -6,7 +6,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { useBookmarks } from '@/hooks/useBookmarks';
 
 export default function BookmarksPage() {
-  const { bookmarks, isLoading, error, removeBookmark } = useBookmarks();
+  const { bookmarks, isLoading, error } = useBookmarks();
 
   let content: React.ReactNode;
   if (isLoading) {

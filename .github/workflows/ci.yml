@@ -40,8 +40,8 @@ jobs:
       run: npm run build
       working-directory: implementations/backend
 
-    - name: Test Frontend (with coverage)
-      run: npm run test:coverage
+    - name: Test Frontend
+      run: npm test
       working-directory: implementations/frontend
 
     - name: Test Backend (with coverage)

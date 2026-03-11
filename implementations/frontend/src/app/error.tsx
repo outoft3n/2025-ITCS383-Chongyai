@@ -4,12 +4,12 @@ import { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
-interface ErrorProps {
+interface ErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       process.stdout?.write?.(`[Error]: ${error.message}\n`);

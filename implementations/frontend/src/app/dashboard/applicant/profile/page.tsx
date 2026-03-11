@@ -44,7 +44,7 @@ export default function ApplicantProfilePage() {
   const [paying, setPaying] = useState(false);
   const [payMsg, setPayMsg] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
+  const { register, handleSubmit } = useForm<ProfileForm>({
     defaultValues: {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',

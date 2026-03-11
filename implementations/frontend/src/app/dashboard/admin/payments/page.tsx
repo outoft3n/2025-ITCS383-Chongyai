@@ -14,6 +14,13 @@ export default function AdminPaymentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const getBadgeVariant = (status: string) => {
+    if (status === 'COMPLETED') return 'success';
+    if (status === 'FAILED') return 'error';
+    if (status === 'REFUNDED') return 'info';
+    return 'warning';
+  };
+
   const fetchPayments = async (page = 1) => {
     setIsLoading(true);
     try {
@@ -57,14 +64,7 @@ export default function AdminPaymentsPage() {
                   </td>
                   <td className="px-4 py-3 font-semibold text-gray-900">฿{payment.amount.toLocaleString()}</td>
                   <td className="px-4 py-3">
-                    <Badge
-                      variant={
-                        payment.status === 'COMPLETED' ? 'success'
-                          : payment.status === 'FAILED' ? 'error'
-                          : payment.status === 'REFUNDED' ? 'info'
-                          : 'warning'
-                      }
-                    >
+                    <Badge variant={getBadgeVariant(payment.status)}>
                       {payment.status}
                     </Badge>
                   </td>

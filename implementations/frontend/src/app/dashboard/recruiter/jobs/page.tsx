@@ -9,7 +9,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { useMyJobs } from '@/hooks/useJobs';
 
 export default function RecruiterJobsPage() {
-  const { jobs, isLoading, error, updateJob, deleteJob } = useMyJobs();
+  const { jobs, isLoading, error, updateJob } = useMyJobs();
 
   if (isLoading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
   if (error) return <div className="text-center py-8 text-red-500">{error}</div>;

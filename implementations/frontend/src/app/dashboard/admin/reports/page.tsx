@@ -27,6 +27,12 @@ export default function AdminReportsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const getStatusColor = (status: string) => {
+    if (status === 'ACCEPTED') return 'bg-green-500';
+    if (status === 'REJECTED') return 'bg-red-400';
+    return 'bg-primary';
+  };
+
   useEffect(() => {
     Promise.all([
       api.get<ApiResponse<JobReport>>('/reports/jobs'),
@@ -48,7 +54,7 @@ export default function AdminReportsPage() {
   const appStatusData = appReport?.byStatus.map((s) => ({
     label: s.status,
     value: s._count.id,
-    color: s.status === 'ACCEPTED' ? 'bg-green-500' : s.status === 'REJECTED' ? 'bg-red-400' : 'bg-primary',
+    color: getStatusColor(s.status),
   })) ?? [];
 
   const jobTypeData = jobReport?.byType.map((t) => ({

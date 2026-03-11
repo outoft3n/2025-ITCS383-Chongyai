@@ -134,8 +134,8 @@ function ScheduleInterviewForm() {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Interview Type</label>
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-medium text-gray-700">Interview Type</legend>
           <div className="grid grid-cols-3 gap-3">
             {INTERVIEW_TYPES.map((type) => (
               <button
@@ -147,13 +147,14 @@ function ScheduleInterviewForm() {
                     ? 'border-primary bg-orange-50 text-primary'
                     : 'border-gray-200 hover:border-gray-300 text-gray-600'
                 }`}
+                aria-pressed={formData.type === type.value}
               >
                 {type.icon}
                 <span className="text-sm font-medium">{type.label}</span>
               </button>
             ))}
           </div>
-        </div>
+        </fieldset>
 
         <div className="space-y-2">
           <label htmlFor="notes" className="text-sm font-medium text-gray-700 flex items-center gap-2">

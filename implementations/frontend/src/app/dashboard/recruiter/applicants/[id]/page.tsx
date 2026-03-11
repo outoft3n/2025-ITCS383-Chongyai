@@ -28,6 +28,13 @@ function ApplicantProfileContent({ id }: { id: string }) {
   
   const [applicant, setApplicant] = useState<User | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
+
+  const getApplicationBadgeVariant = (status: string) => {
+    if (status === 'ACCEPTED') return 'success';
+    if (status === 'REJECTED') return 'destructive';
+    if (status === 'INTERVIEWING') return 'warning';
+    return 'default';
+  };
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -236,12 +243,7 @@ function ApplicantProfileContent({ id }: { id: string }) {
                   </p>
                 </div>
                 <Badge 
-                  variant={
-                    app.status === 'ACCEPTED' ? 'success' :
-                    app.status === 'REJECTED' ? 'destructive' :
-                    app.status === 'INTERVIEWING' ? 'warning' :
-                    'default'
-                  }
+                  variant={getApplicationBadgeVariant(app.status)}
                   className="text-xs"
                 >
                   {app.status}
