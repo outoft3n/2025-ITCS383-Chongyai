@@ -207,11 +207,15 @@ async function main(): Promise<void> {
   }
 }
 
-main()
-  .catch((e) => {
+void (async () => {
+  process.stdout.write('Seeding database...\n');
+  try {
+    await main();
+    process.stdout.write('Database seeded successfully.\n');
+  } catch (e) {
     process.stderr.write(`Seed error: ${String(e)}\n`);
     process.exit(1);
-  })
-  .finally(() => {
-    prisma.$disconnect().catch(() => undefined);
-  });
+  } finally {
+    await prisma.$disconnect();
+  }
+})();

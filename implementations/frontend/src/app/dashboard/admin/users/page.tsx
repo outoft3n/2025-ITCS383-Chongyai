@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -50,6 +50,72 @@ export default function AdminUsersPage() {
     }
   };
 
+  let content: React.ReactNode;
+  if (isLoading) {
+    content = <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
+  } else if (error) {
+    content = <div className="text-center py-8 text-red-500">{error}</div>;
+  } else {
+    content = (
+      <>
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">User</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Role</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Verified</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Paid</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Joined</th>
+                <th className="px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {users.map((user) => (
+                <tr key={user.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+                    <p className="text-gray-400 text-xs">{user.email}</p>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge variant={user.role === 'ADMIN' ? 'error' : user.role === 'RECRUITER' ? 'yellow' : 'orange'}>
+                      {user.role}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    {user.isVerified
+                      ? <CheckCircle className="w-4 h-4 text-green-500" />
+                      : <XCircle className="w-4 h-4 text-gray-300" />
+                    }
+                  </td>
+                  <td className="px-4 py-3">
+                    {user.isPaid
+                      ? <CheckCircle className="w-4 h-4 text-green-500" />
+                      : <XCircle className="w-4 h-4 text-gray-300" />
+                    }
+                  </td>
+                  <td className="px-4 py-3 text-gray-400 text-xs">
+                    {formatDistanceToNow(new Date(user.createdAt), { addSuffix: true })}
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => handleDelete(user.id)}
+                      className="p-1.5 text-gray-300 hover:text-red-500 transition-colors"
+                      title="Delete user"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Pagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={fetchUsers} />
+      </>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -66,69 +132,7 @@ export default function AdminUsersPage() {
           />
         </div>
       </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-16"><Spinner size="lg" /></div>
-      ) : error ? (
-        <div className="text-center py-8 text-red-500">{error}</div>
-      ) : (
-        <>
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">User</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Role</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Verified</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Paid</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Joined</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-                      <p className="text-gray-400 text-xs">{user.email}</p>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge variant={user.role === 'ADMIN' ? 'error' : user.role === 'RECRUITER' ? 'yellow' : 'orange'}>
-                        {user.role}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      {user.isVerified
-                        ? <CheckCircle className="w-4 h-4 text-green-500" />
-                        : <XCircle className="w-4 h-4 text-gray-300" />
-                      }
-                    </td>
-                    <td className="px-4 py-3">
-                      {user.isPaid
-                        ? <CheckCircle className="w-4 h-4 text-green-500" />
-                        : <XCircle className="w-4 h-4 text-gray-300" />
-                      }
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs">
-                      {formatDistanceToNow(new Date(user.createdAt), { addSuffix: true })}
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => handleDelete(user.id)}
-                        className="p-1.5 text-gray-300 hover:text-red-500 transition-colors"
-                        title="Delete user"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <Pagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={fetchUsers} />
-        </>
-      )}
+      {content}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -25,6 +26,35 @@ export default function JobApplicationsPage({ params }: PageProps) {
     router.push(`/dashboard/recruiter/applicants/${application.applicantId}?scheduleInterview=true&applicationId=${application.id}`);
   };
 
+  let content: React.ReactNode;
+  if (isLoading) {
+    content = <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
+  } else if (error) {
+    content = <div className="text-center py-8 text-red-500">{error}</div>;
+  } else if (applications.length === 0) {
+    content = (
+      <div className="text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100">
+        No applications received yet.
+      </div>
+    );
+  } else {
+    content = (
+      <div className="grid gap-3">
+        {applications.map((app) => (
+          <ApplicationCard
+            key={app.id}
+            application={app}
+            showApplicant
+            showViewProfile
+            showScheduleInterview
+            onStatusChange={handleStatusChange}
+            onScheduleInterview={handleScheduleInterview}
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <Link href="/dashboard/recruiter/jobs" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary">
@@ -35,30 +65,7 @@ export default function JobApplicationsPage({ params }: PageProps) {
         <h1 className="text-2xl font-bold text-gray-900">Applicants</h1>
         <p className="text-gray-500 text-sm">{applications.length} application(s) for this position</p>
       </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-16"><Spinner size="lg" /></div>
-      ) : error ? (
-        <div className="text-center py-8 text-red-500">{error}</div>
-      ) : applications.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100">
-          No applications received yet.
-        </div>
-      ) : (
-        <div className="grid gap-3">
-          {applications.map((app) => (
-            <ApplicationCard
-              key={app.id}
-              application={app}
-              showApplicant
-              showViewProfile
-              showScheduleInterview
-              onStatusChange={handleStatusChange}
-              onScheduleInterview={handleScheduleInterview}
-            />
-          ))}
-        </div>
-      )}
+      {content}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Eye, EyeOff } from 'lucide-react';
 import { JobTypeBadge } from '@/components/ui/Badge';
@@ -39,65 +39,69 @@ export default function AdminJobsPage() {
     }
   };
 
+  let content: React.ReactNode;
+  if (isLoading) {
+    content = <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
+  } else if (error) {
+    content = <div className="text-center py-8 text-red-500">{error}</div>;
+  } else {
+    content = (
+      <>
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Job</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Views</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Posted</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
+                <th className="px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {jobs.map((job) => (
+                <tr key={job.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-gray-900">{job.title}</p>
+                    <p className="text-gray-400 text-xs">{job.location}</p>
+                  </td>
+                  <td className="px-4 py-3"><JobTypeBadge type={job.jobType} /></td>
+                  <td className="px-4 py-3 text-gray-600">{job.viewCount}</td>
+                  <td className="px-4 py-3 text-gray-400 text-xs">
+                    {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${job.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                      {job.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => toggleActive(job)}
+                      className="p-1.5 text-gray-400 hover:text-primary transition-colors"
+                      title={job.isActive ? 'Deactivate' : 'Activate'}
+                    >
+                      {job.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Pagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={fetchJobs} />
+      </>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">All Jobs</h1>
         <p className="text-gray-500 text-sm">{pagination.total} job postings</p>
       </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-16"><Spinner size="lg" /></div>
-      ) : error ? (
-        <div className="text-center py-8 text-red-500">{error}</div>
-      ) : (
-        <>
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Job</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Views</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Posted</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {jobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900">{job.title}</p>
-                      <p className="text-gray-400 text-xs">{job.location}</p>
-                    </td>
-                    <td className="px-4 py-3"><JobTypeBadge type={job.jobType} /></td>
-                    <td className="px-4 py-3 text-gray-600">{job.viewCount}</td>
-                    <td className="px-4 py-3 text-gray-400 text-xs">
-                      {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${job.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                        {job.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => toggleActive(job)}
-                        className="p-1.5 text-gray-400 hover:text-primary transition-colors"
-                        title={job.isActive ? 'Deactivate' : 'Activate'}
-                      >
-                        {job.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <Pagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={fetchJobs} />
-        </>
-      )}
+      {content}
     </div>
   );
 }
