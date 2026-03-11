@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { ChartPlaceholder } from '@/components/dashboard/ChartPlaceholder';
 import { Spinner } from '@/components/ui/Spinner';
 import api, { getApiErrorMessage } from '@/lib/api';
 import type { ApiResponse } from '@/types';
+import { useEffect, useState } from 'react';
 
 interface JobReport {
   topViewed: { id: string; title: string; viewCount: number; isActive: boolean }[];
@@ -52,7 +52,7 @@ export default function AdminReportsPage() {
   })) ?? [];
 
   const jobTypeData = jobReport?.byType.map((t) => ({
-    label: t.jobType.replace('_', ' '),
+    label: t.jobType.replaceAll('_', ' '),
     value: t._count.id,
   })) ?? [];
 

@@ -1,9 +1,9 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { z } from 'zod';
 import { ConferenceStatus } from '@prisma/client';
+import { NextFunction, Request, Response, Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod';
 import { prisma } from '../lib/prisma';
-import { successResponse, errorResponse } from '../lib/response';
+import { errorResponse, successResponse } from '../lib/response';
 import { authenticateToken } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
 
@@ -15,7 +15,7 @@ const CreateRoomSchema = z.object({
 });
 
 function generateRoomCode(): string {
-  return uuidv4().replace(/-/g, '').toUpperCase().slice(0, 8);
+  return uuidv4().replaceAll(/-/g, '').toUpperCase().slice(0, 8);
 }
 
 router.post(

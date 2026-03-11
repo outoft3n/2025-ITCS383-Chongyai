@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { InterviewStatusBadge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
+import api, { getApiErrorMessage } from '@/lib/api';
+import type { ApiResponse, Interview } from '@/types';
 import { format } from 'date-fns';
 import { CalendarDays, Clock, MapPin, Video } from 'lucide-react';
-import { InterviewStatusBadge } from '@/components/ui/Badge';
-import { Spinner } from '@/components/ui/Spinner';
-import { Button } from '@/components/ui/Button';
-import api, { getApiErrorMessage } from '@/lib/api';
-import type { Interview, ApiResponse } from '@/types';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function ApplicantInterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
@@ -56,7 +56,7 @@ export default function ApplicantInterviewsPage() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-primary" />
-                  {interview.type.replace('_', ' ')}
+                  {interview.type.replaceAll('_', ' ')}
                 </div>
               </div>
               {interview.notes && <p className="text-sm text-gray-400 italic mt-2">{interview.notes}</p>}

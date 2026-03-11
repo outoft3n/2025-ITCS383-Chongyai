@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { CalendarDays, Clock, User } from 'lucide-react';
 import { InterviewStatusBadge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import api, { getApiErrorMessage } from '@/lib/api';
-import type { Interview, ApiResponse } from '@/types';
+import type { ApiResponse, Interview } from '@/types';
+import { format } from 'date-fns';
+import { CalendarDays, Clock, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function RecruiterInterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
@@ -58,7 +58,7 @@ export default function RecruiterInterviewsPage() {
                   {format(new Date(interview.scheduledAt), 'p')} ({interview.duration} min)
                 </div>
                 <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                  {interview.type.replace('_', ' ')}
+                  {interview.type.replaceAll('_', ' ')}
                 </span>
               </div>
               {interview.notes && <p className="text-sm text-gray-400 italic mt-2">{interview.notes}</p>}

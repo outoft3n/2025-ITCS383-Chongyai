@@ -1,9 +1,9 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { z } from 'zod';
-import { Role, PaymentStatus } from '@prisma/client';
+import { PaymentStatus, Role } from '@prisma/client';
+import { NextFunction, Request, Response, Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod';
 import { prisma } from '../lib/prisma';
-import { successResponse, errorResponse, paginatedResponse } from '../lib/response';
+import { errorResponse, paginatedResponse, successResponse } from '../lib/response';
 import { authenticateToken, requireRole } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
 
@@ -80,11 +80,11 @@ router.post(
       }
 
       // Mock banking: card ending in "0000" fails, all others succeed
-      const lastFour = cardNumber.replace(/\s/g, '').slice(-4);
+      const lastFour = cardNumber.replaceAll(/\s/g, '').slice(-4);
       const isSuccess = lastFour !== '0000';
 
       if (isSuccess) {
-        const transactionRef = uuidv4().replace(/-/g, '').toUpperCase().slice(0, 16);
+        const transactionRef = uuidv4().replaceAll(/-/g, '').toUpperCase().slice(0, 16);
         await prisma.$transaction([
           prisma.payment.update({
             where: { id: paymentId },

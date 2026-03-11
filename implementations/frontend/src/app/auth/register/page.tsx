@@ -1,18 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/context/AuthContext';
+import api, { getApiErrorMessage } from '@/lib/api';
+import { getDashboardPath } from '@/lib/auth';
+import type { ApiResponse, LoginResponse } from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Briefcase, Building2, User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Briefcase, User, Building2 } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
-import { getDashboardPath } from '@/lib/auth';
-import api, { getApiErrorMessage } from '@/lib/api';
-import type { ApiResponse, LoginResponse } from '@/types';
 
 const RegisterSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -47,7 +47,7 @@ export default function RegisterPage() {
       const res = await api.post<ApiResponse<LoginResponse>>('/auth/register', data);
       const { token, user } = res.data.data;
       login(token, user);
-      router.replace(getDashboardPath(user.role));
+      router.replaceAll(getDashboardPath(user.role));
     } catch (err) {
       setError(getApiErrorMessage(err));
     }
@@ -78,11 +78,10 @@ export default function RegisterPage() {
             ].map(({ value, label, icon: Icon, desc }) => (
               <label key={value} className="cursor-pointer">
                 <input type="radio" value={value} className="sr-only" {...register('role')} />
-                <div className={`border-2 rounded-xl p-3 text-center transition-colors ${
-                  selectedRole === value
+                <div className={`border-2 rounded-xl p-3 text-center transition-colors ${selectedRole === value
                     ? 'border-primary bg-orange-50'
                     : 'border-gray-200 hover:border-orange-200'
-                }`}>
+                  }`}>
                   <Icon className={`w-6 h-6 mx-auto mb-1 ${selectedRole === value ? 'text-primary' : 'text-gray-400'}`} />
                   <p className={`font-semibold text-sm ${selectedRole === value ? 'text-primary' : 'text-gray-700'}`}>{label}</p>
                   <p className="text-xs text-gray-400">{desc}</p>

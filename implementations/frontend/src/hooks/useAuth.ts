@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth as useAuthContext } from '@/context/AuthContext';
 import type { Role } from '@/types';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export { useAuth } from '@/context/AuthContext';
 
@@ -14,11 +14,11 @@ export function useRequireAuth(requiredRole?: Role) {
   useEffect(() => {
     if (isLoading) return;
     if (!user) {
-      router.replace('/auth/login');
+      router.replaceAll('/auth/login');
       return;
     }
     if (requiredRole && user.role !== requiredRole) {
-      router.replace('/dashboard/applicant');
+      router.replaceAll('/dashboard/applicant');
     }
   }, [user, isLoading, requiredRole, router]);
 

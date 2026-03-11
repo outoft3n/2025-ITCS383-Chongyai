@@ -1,18 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/context/AuthContext';
+import api, { getApiErrorMessage } from '@/lib/api';
+import { getDashboardPath } from '@/lib/auth';
+import type { ApiResponse, LoginResponse } from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Briefcase } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
-import { getDashboardPath } from '@/lib/auth';
-import api, { getApiErrorMessage } from '@/lib/api';
-import type { ApiResponse, LoginResponse } from '@/types';
 
 const LoginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -36,7 +36,7 @@ export default function LoginPage() {
       const res = await api.post<ApiResponse<LoginResponse>>('/auth/login', data);
       const { token, user } = res.data.data;
       login(token, user);
-      router.replace(getDashboardPath(user.role));
+      router.replaceAll(getDashboardPath(user.role));
     } catch (err) {
       setError(getApiErrorMessage(err));
     }
