@@ -6,7 +6,7 @@
 
 ## 1. Project Overview
 
-The Job Center Management System is a web-based platform that connects job applicants with recruitment units. It supports the full recruitment lifecycle — from applicant registration and job search through to interview scheduling and applicant review. The system integrates with the Ministry of Interior (MOI) for citizen identity verification and provides a support channel via chatbot with human escalation.
+The Job Center Management System is a web-based platform that connects job applicants with recruitment units. It supports the full recruitment lifecycle from applicant registration and job search through to interview scheduling and applicant review. The system integrates with the Ministry of Interior (MOI) for citizen identity verification and provides a support channel via chatbot with human escalation.
 
 ---
 
@@ -14,7 +14,7 @@ The Job Center Management System is a web-based platform that connects job appli
 
 | Actor | Type | Description |
 |---|---|---|
-| Applicant | User | Job seeker who registers, searches for jobs, and applies |
+| Applicant | User | Job seeker who registers, searches for jobs, bookmarks, and applies |
 | Recruitment Unit | User | Organisation that posts job announcements and manages applicants |
 | Administrator | User | System operator who monitors overall system activity |
 | Support Staff | User | Handles human support requests escalated from the chatbot |
