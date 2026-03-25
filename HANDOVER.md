@@ -229,7 +229,7 @@ The implemented system covers the majority of the designed use cases. Key gaps a
 | Tailwind CSS | CSS utility framework | Styling and responsive layout |
 | React Hook Form | Form library | Form state management and validation handling |
 | Axios | HTTP client | API communication between frontend and backend |
-| Zod | Schema validation | Client-side schema validation and type inference |
+| Zod | Schema validation | Client-side schema to validate form input and ensure the data structure is correct before sending it to the backend |
 
 ---
 
@@ -238,11 +238,11 @@ The implemented system covers the majority of the designed use cases. Key gaps a
 | Technology | Version/Type | Purpose |
 |---|---|---|
 | Node.js | Runtime | JavaScript runtime environment for server-side execution |
-| Express.js | Web framework | Building RESTful APIs |
+| Express.js | Web framework | Building RESTful API endpoints and handle the main business logic of the system |
 | TypeScript | Language | Type-safe development across the backend codebase |
-| JWT (JSON Web Token) | Authentication | Stateless authentication — issuing and verifying access tokens |
+| JWT (JSON Web Token) | Authentication | Stateless authentication and authorization, allowing the system to verify logged-in users securely. |
 | bcryptjs | Cryptography | Secure password hashing before storing in the database |
-| Zod | Schema validation | Server-side request body and parameter validation |
+| Zod | Schema validation | Server-side request body and parameter validation to validate incoming request data before processing |
 
 ---
 
@@ -250,8 +250,8 @@ The implemented system covers the majority of the designed use cases. Key gaps a
 
 | Technology | Version/Type | Purpose |
 |---|---|---|
-| PostgreSQL | Relational database | Primary data store for all system data |
 | Prisma ORM | ORM | Database schema management, migrations, and type-safe queries |
+| PostgreSQL | Relational database | Primary data store for all system data |
 
 ---
 
@@ -259,9 +259,9 @@ The implemented system covers the majority of the designed use cases. Key gaps a
 
 | Technology | Version/Type | Purpose |
 |---|---|---|
-| Docker | Containerisation | Development environment setup via devcontainer |
+| Docker | Containerisation | Standardizing the development environment and make project setup easier across different machines |
 | Jest | Testing framework | Unit and integration testing |
-| ESLint | Linter | Code quality enforcement and style consistency |
+| ESLint | Linter | Checking code quality and maintain a consistent coding style |
 | dotenv | Configuration | Environment variable management across environments |
 
 ## 3B.Required information to successfully hand over the project
