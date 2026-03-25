@@ -1,0 +1,6 @@
+projectKey=Chongyai-JC
+serverUrl=http://localhost:9000
+serverVersion=26.3.0.120487
+dashboardUrl=http://localhost:9000/dashboard?id=Chongyai-JC
+ceTaskId=f340d971-1d86-43f3-897f-1635297f2174
+ceTaskUrl=http://localhost:9000/api/ce/task?id=f340d971-1d86-43f3-897f-1635297f2174
