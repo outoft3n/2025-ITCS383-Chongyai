@@ -165,23 +165,8 @@ This document compares all original software design artifacts against the actual
 | **Payment Service** | ✅ | ❌ | **Missing in implementation** | No actual payment integration |
 | **Identity Verification Service (MOI Integration)** | ✅ | ⚠️ | **Partially consistent** | Exists but does not call MOI API |
 
-### 4.2 Relationships
 
-| Relationship | In Design | In Implementation | Status | Notes |
-|---|---|---|---|---|
-| Applicant → Web Frontend | ✅ | ✅ | Consistent | Uses browser (HTTPS) |
-| Recruitment Unit → Web Frontend | ✅ | ✅ | Consistent | Uses browser (HTTPS) |
-| Admin → Admin Web Frontend | ✅ | ✅ | Consistent | Access report interface |
-| Frontend → Backend API | ✅ | ✅ | Consistent | Communication via HTTP |
-| Backend → Database | ✅ | ✅ | Consistent | Uses Prisma ORM |
-| Backend → Report Database | ✅ | ❌ | **Inconsistent** | No separate DB exists |
-| Backend → Chatbot Service | ✅ | ❌ | **Inconsistent** | No external service, logic inside backend |
-| Backend → Payment Service | ✅ | ❌ | **Inconsistent** | No payment service implemented |
-| Backend → MOI | ✅ | ❌ | **Inconsistent** | No external API call |
-| Backend → Identity Verification | ✅ | ⚠️ | **Partially consistent** | Implemented as internal logic |
-
-
-### 4.3 Key Differences (Design vs Implementation)
+### 4.2 Key Differences (Design vs Implementation)
 
 #### 1. Chatbot Service
 - **Design:**
@@ -227,13 +212,7 @@ This document compares all original software design artifacts against the actual
 
 3. **Removed** Payment Service and Banking System integration  
    → Not implemented in actual system  
-
-4. **Updated** Identity Verification Service  
-   → Changed from external MOI integration  
-   → To internal validation logic in backend  
-
-5. **Simplified architecture**  
-   → From multiple services to single backend system  
+  
 ![C4_level2_updated](./images/C4_updated/Container_diagram.png)
 ## 5. DFD (Context Level) Verification
 
