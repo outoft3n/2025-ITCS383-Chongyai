@@ -202,7 +202,7 @@ This document compares all original software design artifacts against the actual
   - No external API call  
 - **Conclusion:** Partially consistent  
 
-### 4.4 Changes Made to Updated C4 Level 2
+### 4.3 Changes Made to Updated C4 Level 2
 
 1. **Removed** Chatbot Service (Python microservice)  
    → Integrated into Backend API (TypeScript)
