@@ -234,10 +234,10 @@ This document compares all original software design artifacts against the actual
 
 5. **Simplified architecture**  
    → From multiple services to single backend system  
+![C4_level2_updated](./images/C4_updated/Container_diagram.png)
+## 5. DFD (Context Level) Verification
 
-## 4. DFD (Context Level) Verification
-
-### 4.1 External Entities
+### 5.1 External Entities
 
 | Entity | In DFD | In Implementation | Status | Notes |
 |---|---|---|---|---|
@@ -248,7 +248,7 @@ This document compares all original software design artifacts against the actual
 | **Banking System** | ✅ | ❌ | **Inconsistent** | Payment is not implemented; Banking System integration does not exist in the actual system |
 | **Support Staff** | ❌ | ✅ | **Missing in DFD** | Support Staff is an actor in the actual system — handles human support escalated from chatbot; not shown in DFD at all |
 
-### 4.2 Data Flows
+### 5.2 Data Flows
 
 | Data Flow | In DFD | In Implementation | Status | Notes |
 |---|---|---|---|---|
@@ -261,9 +261,9 @@ This document compares all original software design artifacts against the actual
 
 ---
 
-## 5. Overall Summary of Discrepancies
+## 6. Overall Summary of Discrepancies
 
-### 5.1 Features in Design but Not Implemented
+### 6.1 Features in Design but Not Implemented
 
 | # | Actor | Feature | Affected Diagrams |
 |---|---|---|---|
@@ -273,13 +273,13 @@ This document compares all original software design artifacts against the actual
 | 4 | Applicant | Make payment / Banking System | Use Case, C4, DFD |
 | 5 | Recruitment Unit | Delete account | Use Case |
 
-### 5.2 Features Partially Implemented (Defects)
+### 6.2 Features Partially Implemented (Defects)
 
 | # | Actor | Feature | Defect | Affected Diagrams | Recommendation |
 |---|---|---|---|---|---|
 | 1 | Recruitment Unit | Publish announcement | Frontend sends payload in incorrect format — does not match database schema. API works correctly via Postman. | Use Case | Fix frontend payload serialization to match API contract |
 
-### 5.3 Design Gaps (In Implementation but Missing from Original Design)
+### 6.3 Design Gaps (In Implementation but Missing from Original Design)
 
 | # | Artifact | Gap | Resolution |
 |---|---|---|---|
@@ -292,16 +292,6 @@ This document compares all original software design artifacts against the actual
 | 7 | DFD | No data stores present | Add at minimum: Job listings, User accounts, Applications |
 | 8 | DFD | No bidirectional flows shown | Add return flows from system back to actors and external systems |
 
----
-
-## 6. Conclusion
-
-The implemented system covers the majority of the designed use cases. Key gaps across all three diagrams are:
-
-- **Payment and Banking System** — designed across all diagrams but not implemented
-- **Account management features** (delete/suspend) for Applicant and Recruitment Unit — designed but not built
-- **Support Staff** — implemented but missing from both the original C4 and the DFD
-- **Publish Announcement** — has a known frontend bug (API layer is functional)
 
 ---
 
