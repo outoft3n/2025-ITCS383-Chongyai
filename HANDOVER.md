@@ -496,7 +496,7 @@ No security hotspots were detected, indicating that there are no areas requiring
 
 ---
 
-# Discussion
+### Discussion
 
 The SonarQube analysis indicates that the Chongyai-JC project maintains **acceptable overall quality** and successfully passes the Quality Gate.
 
@@ -514,7 +514,7 @@ The relatively low test coverage further increases long-term risk, as changes ma
 
 ---
 
-# Conclusion
+### Conclusion
 
 The SonarQube analysis confirms that the Chongyai-JC project meets the required quality standards and successfully **passes the Quality Gate**.
 
