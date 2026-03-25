@@ -150,6 +150,91 @@ This document compares all original software design artifacts against the actual
 
 ---
 
+## 4. C4 Level 2 Container Diagram Verification
+
+### 4.1 Containers
+
+| Container | In Design | In Implementation | Status | Notes |
+|---|---|---|---|---|
+| Web Frontend (Next.js) | ✅ | ✅ | Consistent | Used by Applicant and Recruitment Unit |
+| Admin Web Frontend (React) | ✅ | ✅ | Consistent | Used by Administrator |
+| Backend API (Node.js / Express / TypeScript) | ✅ | ✅ | Consistent | Main system logic |
+| Database (PostgreSQL) | ✅ | ✅ | Partially consistent | Used for all system data |
+| **Report Database (Separate DB)** | ✅ | ❌ | **Missing in implementation** | Design shows separate DB but not implemented |
+| **Chatbot Service (Python)** | ✅ | ❌ | **Inconsistent** | Implemented inside backend (`chat.routes.ts`) using TypeScript |
+| **Payment Service** | ✅ | ❌ | **Missing in implementation** | No actual payment integration |
+| **Identity Verification Service (MOI Integration)** | ✅ | ⚠️ | **Partially consistent** | Exists but does not call MOI API |
+
+### 4.2 Relationships
+
+| Relationship | In Design | In Implementation | Status | Notes |
+|---|---|---|---|---|
+| Applicant → Web Frontend | ✅ | ✅ | Consistent | Uses browser (HTTPS) |
+| Recruitment Unit → Web Frontend | ✅ | ✅ | Consistent | Uses browser (HTTPS) |
+| Admin → Admin Web Frontend | ✅ | ✅ | Consistent | Access report interface |
+| Frontend → Backend API | ✅ | ✅ | Consistent | Communication via HTTP |
+| Backend → Database | ✅ | ✅ | Consistent | Uses Prisma ORM |
+| Backend → Report Database | ✅ | ❌ | **Inconsistent** | No separate DB exists |
+| Backend → Chatbot Service | ✅ | ❌ | **Inconsistent** | No external service, logic inside backend |
+| Backend → Payment Service | ✅ | ❌ | **Inconsistent** | No payment service implemented |
+| Backend → MOI | ✅ | ❌ | **Inconsistent** | No external API call |
+| Backend → Identity Verification | ✅ | ⚠️ | **Partially consistent** | Implemented as internal logic |
+
+
+### 4.3 Key Differences (Design vs Implementation)
+
+#### 1. Chatbot Service
+- **Design:**
+  - Separate Python service  
+- **Implementation:**
+  - Implemented inside backend (`chat.routes.ts`)  
+  - Uses rule-based logic in TypeScript  
+- **Conclusion:** Inconsistent  
+
+
+#### 2. Report Database
+- **Design:**
+  - Separate PostgreSQL database for reports  
+- **Implementation:**
+  - Uses a single database for all features  
+- **Conclusion:** Missing in implementation  
+
+
+#### 3. Payment Service
+- **Design:**
+  - External payment service with Banking System  
+- **Implementation:**
+  - Not implemented  
+- **Conclusion:** Missing in implementation  
+
+
+#### 4. Identity Verification Service
+- **Design:**
+  - External service calling Ministry of Interior (MOI)  
+- **Implementation:**
+  - Implemented in backend (`verifications.routes.ts`)  
+  - Uses local validation function (`validateThaiId`)  
+  - No external API call  
+- **Conclusion:** Partially consistent  
+
+### 4.4 Changes Made to Updated C4 Level 2
+
+1. **Removed** Chatbot Service (Python microservice)  
+   → Integrated into Backend API (TypeScript)
+
+2. **Removed** separate Report Database  
+   → Use a single PostgreSQL database  
+
+3. **Removed** Payment Service and Banking System integration  
+   → Not implemented in actual system  
+
+4. **Updated** Identity Verification Service  
+   → Changed from external MOI integration  
+   → To internal validation logic in backend  
+
+5. **Simplified architecture**  
+   → From multiple services to single backend system  
+
 ## 4. DFD (Context Level) Verification
 
 ### 4.1 External Entities
