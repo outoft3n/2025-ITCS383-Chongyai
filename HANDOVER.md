@@ -43,7 +43,7 @@ The Job Center Management System is a web-based platform that connects job appli
 | Delete account | ✅ | ✅ | — | — | ❌ Not implemented |
 | Suspend account | ✅ | — | — | — | ❌ Not implemented |
 | Select schedule interview | ✅ | — | — | — | ❌ Not implemented |
-| Make payment / Banking System | ✅ | — | — | — | ⚠️ Backend API ready, frontend not implemented |
+| Make payment / Banking System | ✅ | — | — | — | ❌ Not implemented |
 
 ---
 
@@ -79,7 +79,7 @@ This document compares all original software design artifacts against the actual
 | **Delete account** | ✅ | ❌ | **Missing in implementation** | Designed but not implemented |
 | **Suspend account** | ✅ | ❌ | **Missing in implementation** | Designed but not implemented |
 | **Select schedule interview** | ✅ | ❌ | **Missing in implementation** | Designed but not implemented |
-| **Make payment** | ✅ | ❌ | **Missing in implementation** | Designed with Banking System integration, Backend API available, but not integrate in frontend |
+| **Make payment** | ✅ | ❌ | **Missing in implementation** | Designed with Banking System integration, but not implemented |
 
 ### 2.2 Recruitment Unit — Use Cases
 
@@ -141,10 +141,12 @@ This document compares all original software design artifacts against the actual
 ### 3.4 Changes Made to Updated C4 Level 1
 
 1. **Added** Support Staff as an actor with "handle support" relationship to the system
-2. **Removed** Banking System external system — payment integration is not implemented
+2. **Removed** Banking System external system because payment integration is not implemented
 3. **Corrected** Administrator relationship label from "inspect, report" to "view system report"
 4. **Expanded** Recruitment Unit relationships into two descriptive labels: "manages job postings and applicants" and "manages account and monitors system"
 5. **Expanded** Applicant relationship label to "searches and applies for jobs" and added "register applicant" and "update account" relationships
+
+![C4_level1_updated](./images/C4_updated/context_diagram.png)
 
 ---
 
