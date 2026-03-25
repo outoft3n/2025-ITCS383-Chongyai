@@ -79,7 +79,7 @@ This document compares all original software design artifacts against the actual
 | **Delete account** | ✅ | ❌ | **Missing in implementation** | Designed but not implemented |
 | **Suspend account** | ✅ | ❌ | **Missing in implementation** | Designed but not implemented |
 | **Select schedule interview** | ✅ | ❌ | **Missing in implementation** | Designed but not implemented |
-| **Make payment** | ✅ | ❌ | **Missing in implementation** | Designed with Banking System integration; not implemented |
+| **Make payment** | ✅ | ❌ | **Missing in implementation** | Designed with Banking System integration, Backend API available, but not integrate in frontend |
 
 ### 2.2 Recruitment Unit — Use Cases
 
