@@ -19,6 +19,7 @@ The Job Center Management System is a web-based platform that connects job appli
 | Administrator | User | System operator who monitors overall system activity |
 | Support Staff | User | Handles human support requests escalated from the chatbot |
 | Ministry of Interior (MOI) | External system | Verifies citizen ID during registration |
+| Banking System | External system | Handles payment processing |
 
 ---
 
@@ -42,7 +43,7 @@ The Job Center Management System is a web-based platform that connects job appli
 | Delete account | ✅ | ✅ | — | — | ❌ Not implemented |
 | Suspend account | ✅ | — | — | — | ❌ Not implemented |
 | Select schedule interview | ✅ | — | — | — | ❌ Not implemented |
-| Make payment / Banking System | ✅ | — | — | — | ❌ Not implemented |
+| Make payment / Banking System | ✅ | — | — | — | ⚠️ Backend API ready, frontend not implemented |
 
 ---
 
