@@ -8,8 +8,9 @@ import { JobTypeBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Spinner } from '@/components/ui/Spinner';
-import { useJob } from '@/hooks/useJobs';
+import { useJob, useSimilarJobs } from '@/hooks/useJobs';
 import { useBookmarkCheck } from '@/hooks/useBookmarks';
+import { JobCard } from '@/components/jobs/JobCard';
 import api, { getApiErrorMessage } from '@/lib/api';
 import type { ApiResponse, Application } from '@/types';
 
@@ -21,6 +22,7 @@ export default function JobDetailPage({ params }: JobDetailPageProps) {
   const { id } = params;
   const { job, isLoading, error } = useJob(id);
   const { bookmarked, toggle: toggleBookmark } = useBookmarkCheck(id);
+  const { jobs: similarJobs, isLoading: similarLoading } = useSimilarJobs(id);
   const [applyModal, setApplyModal] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
   const [applying, setApplying] = useState(false);
@@ -144,6 +146,22 @@ export default function JobDetailPage({ params }: JobDetailPageProps) {
           </div>
         </div>
       </Modal>
+
+      {/* Similar Jobs */}
+      {(similarLoading || similarJobs.length > 0) && (
+        <div className="pt-2">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Similar Jobs</h2>
+          {similarLoading ? (
+            <div className="flex justify-center py-6"><Spinner size="md" /></div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {similarJobs.map((similar) => (
+                <JobCard key={similar.id} job={similar} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

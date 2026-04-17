@@ -1,7 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { JobType, Prisma } from '@prisma/client';
+import { JobType, Role, Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { successResponse, paginatedResponse } from '../lib/response';
+import { authenticateToken, requireRole } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -84,6 +85,77 @@ router.get(
       });
 
       successResponse(res, jobs);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+// Search applicants - RECRUITER/ADMIN only
+router.get(
+  '/applicants',
+  authenticateToken,
+  requireRole(Role.RECRUITER, Role.ADMIN),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const page = Math.max(1, Number.parseInt(String(req.query.page ?? '1'), 10));
+      const limit = Math.min(50, Math.max(1, Number.parseInt(String(req.query.limit ?? '20'), 10)));
+
+      const q = req.query.q as string | undefined;
+      const location = req.query.location as string | undefined;
+      const skillsParam = req.query.skills as string | undefined;
+      const skills = skillsParam ? skillsParam.split(',').map((s) => s.trim()).filter(Boolean) : undefined;
+      const education = req.query.education as string | undefined;
+      const experience = req.query.experience as string | undefined;
+
+      const where: Prisma.UserWhereInput = {
+        role: Role.APPLICANT,
+        isPaid: true,
+        ...(q && {
+          OR: [
+            { firstName: { contains: q, mode: 'insensitive' } },
+            { lastName: { contains: q, mode: 'insensitive' } },
+            { email: { contains: q, mode: 'insensitive' } },
+          ],
+        }),
+        applicantProfile: {
+          ...(location && { preferredLocation: { contains: location, mode: 'insensitive' } }),
+          ...(skills && skills.length > 0 && { skills: { hasSome: skills } }),
+          ...(education && { education: { contains: education, mode: 'insensitive' } }),
+          ...(experience && { experience: { contains: experience, mode: 'insensitive' } }),
+        },
+      };
+
+      const [applicants, total] = await prisma.$transaction([
+        prisma.user.findMany({
+          where,
+          skip: (page - 1) * limit,
+          take: limit,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            profileImageUrl: true,
+            createdAt: true,
+            applicantProfile: {
+              select: {
+                skills: true,
+                experience: true,
+                education: true,
+                preferredLocation: true,
+                preferredSalaryMin: true,
+                preferredSalaryMax: true,
+                resumeUrl: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        }),
+        prisma.user.count({ where }),
+      ]);
+
+      paginatedResponse(res, applicants, total, page, limit);
     } catch (err) {
       next(err);
     }

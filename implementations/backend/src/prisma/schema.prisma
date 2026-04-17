@@ -63,6 +63,12 @@ enum VerificationStatus {
   FAILED
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id               String    @id @default(cuid())
   email            String    @unique
@@ -87,6 +93,8 @@ model User {
   payments             Payment[]
   verification         Verification?
   conferenceParticipants ConferenceParticipant[]
+  sentInvitations      Invitation[]         @relation("SentInvitations")
+  receivedInvitations  Invitation[]         @relation("ReceivedInvitations")
 }
 
 model ApplicantProfile {
@@ -134,6 +142,7 @@ model Job {
   recruiter    User          @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
   applications Application[]
   bookmarks    Bookmark[]
+  invitations  Invitation[]
 }
 
 model Application {
@@ -240,4 +249,21 @@ model Verification {
   createdAt  DateTime           @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Invitation {
+  id          String           @id @default(cuid())
+  recruiterId String
+  applicantId String
+  jobId       String
+  message     String?
+  status      InvitationStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  recruiter User @relation("SentInvitations", fields: [recruiterId], references: [id], onDelete: Cascade)
+  applicant User @relation("ReceivedInvitations", fields: [applicantId], references: [id], onDelete: Cascade)
+  job       Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([recruiterId, applicantId, jobId])
 }

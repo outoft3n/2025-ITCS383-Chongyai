@@ -7,6 +7,7 @@ export type InterviewStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
 export type ConferenceStatus = 'WAITING' | 'ACTIVE' | 'ENDED';
 export type PaymentStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FAILED';
+export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
 
 // User entities
 export interface ApplicantProfile {
@@ -243,6 +244,34 @@ export interface SearchFilters {
   skills?: string[];
   page?: number;
   limit?: number;
+}
+
+// Invitation
+export interface Invitation {
+  id: string;
+  recruiterId: string;
+  applicantId: string;
+  jobId: string;
+  message: string | null;
+  status: InvitationStatus;
+  createdAt: string;
+  updatedAt: string;
+  recruiter?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    profileImageUrl: string | null;
+    recruiterProfile: { companyName: string; industry: string | null } | null;
+  };
+  applicant?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    profileImageUrl: string | null;
+    applicantProfile: { skills: string[]; experience: string | null; education: string | null } | null;
+  };
+  job?: Pick<Job, 'id' | 'title' | 'location' | 'jobType' | 'salaryMin' | 'salaryMax'>;
 }
 
 // Reports

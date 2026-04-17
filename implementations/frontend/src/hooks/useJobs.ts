@@ -100,3 +100,20 @@ export function useMyJobs() {
 
   return { jobs, isLoading, error, createJob, updateJob, deleteJob, refetch: fetch };
 }
+
+export function useSimilarJobs(jobId: string) {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!jobId) return;
+    setIsLoading(true);
+    api.get<ApiResponse<Job[]>>(`/recommendations/similar/${jobId}`)
+      .then((res) => setJobs(res.data.data))
+      .catch((err) => setError(getApiErrorMessage(err)))
+      .finally(() => setIsLoading(false));
+  }, [jobId]);
+
+  return { jobs, isLoading, error };
+}

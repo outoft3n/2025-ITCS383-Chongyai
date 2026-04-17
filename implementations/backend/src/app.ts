@@ -19,6 +19,7 @@ import verificationsRouter from './routes/verifications.routes';
 import paymentsRouter from './routes/payments.routes';
 import chatRouter from './routes/chat.routes';
 import conferenceRouter from './routes/conference.routes';
+import invitationsRouter from './routes/invitations.routes';
 
 const app = express();
 
@@ -71,6 +72,7 @@ app.use('/api/verifications', verificationsRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/conference', conferenceRouter);
+app.use('/api/invitations', invitationsRouter);
 
 // 404 & error handlers
 app.use(notFoundHandler);
