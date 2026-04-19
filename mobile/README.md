@@ -55,6 +55,22 @@ flutter pub get
 
 ## Run the App
 
+### Recommended (easiest and best for development)
+
+For this project, the simplest and most stable way to run and test UI quickly is:
+
+```bash
+flutter run -d chrome
+```
+
+Why this is recommended:
+
+- Fast startup and hot reload for day-to-day development
+- No need to boot Android emulator for basic feature testing
+- Easy to reproduce and demo in class/team environments
+
+### Other run options
+
 From the `mobile` directory:
 
 ```bash

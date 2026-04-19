@@ -11,20 +11,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chongyai_mobile/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('App launches and shows auth flow', (WidgetTester tester) async {
     await tester.pumpWidget(const ChongyaiApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Pump a short duration to allow initial routing/auth hydration to start.
+    await tester.pump(const Duration(milliseconds: 300));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // The app should render its branded entry/auth UI without crashing.
+    expect(find.byType(MaterialApp), findsOneWidget);
+    expect(find.byIcon(Icons.work_outline_rounded), findsOneWidget);
   });
 }
