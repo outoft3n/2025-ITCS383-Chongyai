@@ -1,17 +1,148 @@
-# chongyai_mobile
+# Chongyai Job Center Management System - Mobile
 
-A new Flutter project.
+Mobile application for Chongyai Job Center Management System, developed with Flutter.
 
-## Getting Started
+This mobile app supports major user roles in the system (admin, recruiter, and applicant), including authentication, job posting/searching, application tracking, invitations, interview-related workflows, and profile management.
 
-This project is a starting point for a Flutter application.
+## Credits
 
-A few resources to get you started if this is your first Flutter project:
+This mobile module is crafted by **Group Jiancha** for the **Chongyai Job Center Management System** project.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Tech Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter (Dart)
+- Provider (state management)
+- Go Router (routing/navigation)
+- HTTP (API communication)
+- Shared Preferences and Flutter Secure Storage (local/token storage)
+
+## Prerequisites
+
+Before running the project, make sure you have:
+
+- Flutter SDK installed (stable channel recommended)
+- Dart SDK (included with Flutter)
+- Android Studio/Xcode or a connected device/emulator
+- Git
+
+Useful checks:
+
+```bash
+flutter --version
+flutter doctor
+```
+
+## Environment Setup
+
+1. Go to the `mobile` directory.
+2. Create a `.env` file by copying from `.env.example`.
+3. Set the backend API endpoint.
+
+Example:
+
+```env
+API_BASE_URL="https://two025-itcs383-chongyai.onrender.com/api"
+```
+
+## Project Setup (First Time)
+
+From the project root:
+
+```bash
+cd mobile
+flutter pub get
+```
+
+## Run the App
+
+From the `mobile` directory:
+
+```bash
+flutter run
+```
+
+If you have multiple devices:
+
+```bash
+flutter devices
+flutter run -d <device_id>
+```
+
+## Build for Release
+
+### Android APK
+
+```bash
+flutter build apk --release
+```
+
+### Android App Bundle (Play Store)
+
+```bash
+flutter build appbundle --release
+```
+
+### iOS (on macOS only)
+
+```bash
+flutter build ios --release
+```
+
+## Testing and Quality Checks
+
+Run static analysis:
+
+```bash
+flutter analyze
+```
+
+Run tests:
+
+```bash
+flutter test
+```
+
+Run both in sequence:
+
+```bash
+flutter analyze && flutter test
+```
+
+## CI/CD (GitHub Actions)
+
+The repository CI workflow now includes a dedicated **mobile job** in `.github/workflows/ci.yml` that:
+
+1. Sets up Flutter on Ubuntu runner
+2. Installs dependencies with `flutter pub get`
+3. Runs `flutter analyze`
+4. Runs `flutter test`
+
+This ensures every push and pull request to `master` verifies mobile code quality and tests automatically.
+
+## Useful Troubleshooting
+
+- If dependencies fail, run `flutter pub get` again.
+- If build cache causes issues, try:
+
+```bash
+flutter clean
+flutter pub get
+```
+
+- If emulator/device is not detected, check:
+
+```bash
+flutter doctor
+flutter devices
+```
+
+## Folder Notes
+
+- `lib/` main app source code (screens, providers, services, models, widgets)
+- `test/` automated tests
+- `android/`, `ios/`, `web/`, etc. platform-specific files
+
+## Reference
+
+- [Flutter Documentation](https://docs.flutter.dev/)
+- [Flutter Testing](https://docs.flutter.dev/testing)
