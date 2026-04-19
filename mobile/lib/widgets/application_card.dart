@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../core/recruiter_display.dart';
 import '../models/application.dart';
 import '../widgets/status_badge.dart';
 
@@ -26,7 +27,9 @@ class ApplicationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final companyName = application.job?.recruiter?['companyName'];
+    final companyName = companyNameFromRecruiterJson(
+      application.job?.recruiter,
+    );
     final dateFormat = DateFormat('MMM d, yyyy');
 
     return Card(

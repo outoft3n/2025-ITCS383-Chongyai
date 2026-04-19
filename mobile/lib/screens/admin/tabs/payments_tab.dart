@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../models/payment.dart';
 import '../../../services/api_service.dart';
+import '../../../widgets/admin_section_header.dart';
 import '../../../widgets/loading_overlay.dart';
 
 class PaymentsTab extends StatefulWidget {
@@ -26,26 +27,31 @@ class _PaymentsTabState extends State<PaymentsTab> {
   }
 
   Future<void> _loadPayments() async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final payments = await _apiService.getAllPayments(limit: 20);
-      setState(() {
+      _safeSetState(() {
         _payments = payments;
         _total = payments.length;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
   }
 
   @override
@@ -75,6 +81,11 @@ class _PaymentsTabState extends State<PaymentsTab> {
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 16),
                 children: [
+                  const AdminSectionHeader(
+                    title: 'Payments Monitor',
+                    subtitle: 'Track transactions and payment statuses',
+                    icon: Icons.account_balance_wallet_outlined,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(

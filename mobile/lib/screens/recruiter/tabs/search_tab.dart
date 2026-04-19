@@ -34,7 +34,7 @@ class _SearchTabState extends State<SearchTab> {
   }
 
   Future<void> _performSearch() async {
-    setState(() {
+    _safeSetState(() {
       _isSearching = true;
       _searchError = null;
       _hasSearched = true;
@@ -48,18 +48,23 @@ class _SearchTabState extends State<SearchTab> {
         education: _educationController.text.trim().isEmpty ? null : _educationController.text.trim(),
         experience: _experienceController.text.trim().isEmpty ? null : _experienceController.text.trim(),
       );
-      setState(() {
+      _safeSetState(() {
         _results = results;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _searchError = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isSearching = false;
       });
     }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
   }
 
   @override

@@ -125,7 +125,11 @@ class ApiService {
   }
 
   Future<void> logout() async {
-    await _request('/auth/logout', method: 'POST');
+    try {
+      await _request('/auth/logout', method: 'POST');
+    } catch (_) {
+      // Still clear local session if the server is unreachable (same as web interceptor).
+    }
     await removeToken();
   }
 
@@ -413,7 +417,7 @@ class ApiService {
   }
 
   Future<List<Invitation>> getSentInvitations({int page = 1, int limit = 20}) async {
-    final response = await _request('/invitations?page=$page&limit=$limit');
+    final response = await _request('/invitations/sent?page=$page&limit=$limit');
     final data = (response['data'] as List<dynamic>?) ?? [];
     return data.map((item) => Invitation.fromJson(item as Map<String, dynamic>)).toList();
   }

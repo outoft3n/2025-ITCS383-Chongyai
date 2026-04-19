@@ -26,24 +26,45 @@ class _BookmarksTabState extends State<BookmarksTab> {
   }
 
   Future<void> _loadBookmarks() async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final bookmarks = await _apiService.getBookmarks();
-      setState(() {
+      _safeSetState(() {
         _bookmarks = bookmarks;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
+  }
+
+  Future<void> _removeBookmark(String jobId) async {
+    try {
+      await _apiService.removeBookmark(jobId);
+      await _loadBookmarks();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bookmark removed')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Remove bookmark failed: $e')),
+      );
     }
   }
 
@@ -110,6 +131,8 @@ class _BookmarksTabState extends State<BookmarksTab> {
                         return JobCard(
                           key: ValueKey(bookmark.id),
                           job: job,
+                          isBookmarked: true,
+                          onBookmark: () => _removeBookmark(job.id),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(

@@ -1,3 +1,5 @@
+import '../core/json_converters.dart';
+
 class ApplicantProfile {
   final String id;
   final String userId;
@@ -23,15 +25,15 @@ class ApplicantProfile {
 
   factory ApplicantProfile.fromJson(Map<String, dynamic> json) {
     return ApplicantProfile(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
+      id: readString(json['id']),
+      userId: readString(json['userId']),
       resumeUrl: json['resumeUrl'] as String?,
       skills: (json['skills'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       experience: json['experience'] as String?,
       education: json['education'] as String?,
       preferredLocation: json['preferredLocation'] as String?,
-      preferredSalaryMin: json['preferredSalaryMin'] is int ? json['preferredSalaryMin'] as int : null,
-      preferredSalaryMax: json['preferredSalaryMax'] is int ? json['preferredSalaryMax'] as int : null,
+      preferredSalaryMin: readInt(json['preferredSalaryMin']),
+      preferredSalaryMax: readInt(json['preferredSalaryMax']),
     );
   }
 
@@ -69,9 +71,9 @@ class RecruiterProfile {
 
   factory RecruiterProfile.fromJson(Map<String, dynamic> json) {
     return RecruiterProfile(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      companyName: json['companyName'] as String,
+      id: readString(json['id']),
+      userId: readString(json['userId']),
+      companyName: readString(json['companyName'], 'Company'),
       companyDescription: json['companyDescription'] as String?,
       website: json['website'] as String?,
       industry: json['industry'] as String?,
@@ -122,15 +124,16 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    final role = readString(json['role'], 'APPLICANT');
     return User(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      role: json['role'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      id: readString(json['id']),
+      email: readString(json['email']),
+      role: role,
+      firstName: readString(json['firstName']),
+      lastName: readString(json['lastName']),
       phone: json['phone'] as String?,
-      isVerified: json['isVerified'] as bool,
-      isPaid: json['isPaid'] as bool,
+      isVerified: readBool(json['isVerified']),
+      isPaid: readBool(json['isPaid']),
       profileImageUrl: json['profileImageUrl'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,

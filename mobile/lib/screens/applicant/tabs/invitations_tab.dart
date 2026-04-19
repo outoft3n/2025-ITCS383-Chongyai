@@ -72,6 +72,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
       if (!mounted) return;
       if (e is ApiException && e.statusCode == 409) {
         await _loadInvitations();
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('This invitation has already been responded to.')),
         );

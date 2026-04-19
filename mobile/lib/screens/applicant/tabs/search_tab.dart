@@ -19,35 +19,68 @@ class _SearchTabState extends State<SearchTab> {
   List<Job> _searchResults = [];
   bool _isLoading = false;
   String? _error;
+  final Set<String> _bookmarkedJobIds = {};
 
   Future<void> _searchJobs() async {
     final query = _searchController.text.trim();
     if (query.isEmpty) {
-      setState(() {
+      _safeSetState(() {
         _error = 'Enter a search term to find jobs.';
         _searchResults = [];
       });
       return;
     }
 
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final results = await _apiService.searchJobs(q: query, page: 1, limit: 20);
-      setState(() {
+      _safeSetState(() {
         _searchResults = results;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
+  }
+
+  Future<void> _toggleBookmark(Job job) async {
+    final already = _bookmarkedJobIds.contains(job.id);
+    try {
+      if (already) {
+        await _apiService.removeBookmark(job.id);
+      } else {
+        await _apiService.addBookmark(job.id);
+      }
+      _safeSetState(() {
+        if (already) {
+          _bookmarkedJobIds.remove(job.id);
+        } else {
+          _bookmarkedJobIds.add(job.id);
+        }
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(already ? 'Bookmark removed' : 'Bookmarked')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Bookmark failed: $e')),
+      );
     }
   }
 
@@ -103,6 +136,8 @@ class _SearchTabState extends State<SearchTab> {
                 (job) => JobCard(
                   key: ValueKey(job.id),
                   job: job,
+                  isBookmarked: _bookmarkedJobIds.contains(job.id),
+                  onBookmark: () => _toggleBookmark(job),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(

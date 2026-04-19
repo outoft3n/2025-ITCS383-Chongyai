@@ -1,3 +1,4 @@
+import '../core/json_converters.dart';
 import 'application.dart';
 
 class Interview {
@@ -32,7 +33,7 @@ class Interview {
       id: json['id'] as String,
       applicationId: json['applicationId'] as String,
       scheduledAt: json['scheduledAt'] as String,
-      duration: json['duration'] as int,
+      duration: readInt(json['duration']) ?? 60,
       type: json['type'] as String,
       status: json['status'] as String,
       notes: json['notes'] as String?,

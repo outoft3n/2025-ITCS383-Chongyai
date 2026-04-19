@@ -19,6 +19,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   static final _emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+  static const _demoAccounts = <String, ({String email, String password, IconData icon})>{
+    'Applicant': (
+      email: 'applicant1@email.com',
+      password: 'Applicant@123',
+      icon: Icons.person_outline,
+    ),
+    'Recruiter': (
+      email: 'recruiter1@techcorp.com',
+      password: 'Recruiter@123',
+      icon: Icons.business_center_outlined,
+    ),
+    'Admin': (
+      email: 'admin@chongyai.com',
+      password: 'Admin@123',
+      icon: Icons.admin_panel_settings_outlined,
+    ),
+  };
 
   @override
   void dispose() {
@@ -34,6 +51,14 @@ class _LoginScreenState extends State<LoginScreen> {
       email: _emailController.text.trim(),
       password: _passwordController.text,
     );
+  }
+
+  void _fillDemoByRole(String role) {
+    final account = _demoAccounts[role];
+    if (account == null) return;
+    _emailController.text = account.email;
+    _passwordController.text = account.password;
+    setState(() {});
   }
 
   @override
@@ -143,31 +168,36 @@ class _LoginScreenState extends State<LoginScreen> {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFFFEDD5)),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Demo Accounts',
+                const Text(
+                  'Quick Fill by Role',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFFC2410C),
                   ),
                 ),
-                SizedBox(height: 6),
-                Text(
-                  'Applicant: applicant1@email.com / Applicant@123',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Recruiter: recruiter1@techcorp.com / Recruiter@123',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Admin: admin@chongyai.com / Admin@123',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _demoAccounts.entries.map((entry) {
+                    final role = entry.key;
+                    final icon = entry.value.icon;
+                    return OutlinedButton.icon(
+                      onPressed: () => _fillDemoByRole(role),
+                      icon: Icon(icon, size: 16),
+                      label: Text(role),
+                      style: OutlinedButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),

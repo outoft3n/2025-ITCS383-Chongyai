@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:go_router/go_router.dart';
+
+import '../../../core/recruiter_display.dart';
 import '../../../models/interview.dart';
 import '../../../services/api_service.dart';
 import '../../../widgets/loading_overlay.dart';
@@ -120,6 +123,8 @@ class _InterviewsTabState extends State<InterviewsTab> {
     final dateFormat = DateFormat('EEEE, MMMM d, yyyy');
     final timeFormat = DateFormat('h:mm a');
     final scheduledDate = DateTime.parse(interview.scheduledAt);
+    final company =
+        companyNameFromRecruiterJson(interview.application?.job?.recruiter);
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -142,10 +147,10 @@ class _InterviewsTabState extends State<InterviewsTab> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (interview.application?.job?.recruiter?['companyName'] != null) ...[
+                      if (company != null) ...[
                         const SizedBox(height: 4),
                         Text(
-                          interview.application!.job!.recruiter!['companyName'],
+                          company,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Colors.grey[600],
                           ),
@@ -205,8 +210,7 @@ class _InterviewsTabState extends State<InterviewsTab> {
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: () {
-                  // Navigate to conference
-                  Navigator.pushNamed(context, '/conference', arguments: interview.conferenceId);
+                  context.push('/conference');
                 },
                 icon: Icon(Icons.videocam),
                 label: Text('Join Video Interview'),

@@ -33,6 +33,8 @@ class _ApplicantHomeScreenState extends State<ApplicantHomeScreen> {
     return Scaffold(
       body: _tabs[_currentIndex],
       bottomNavigationBar: NavigationBar(
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        height: 68,
         selectedIndex: _currentIndex,
         onDestinationSelected: (value) => setState(() {
           _currentIndex = value;

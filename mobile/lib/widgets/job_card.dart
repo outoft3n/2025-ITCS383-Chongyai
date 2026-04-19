@@ -31,10 +31,11 @@ class JobCard extends StatelessWidget {
                   Expanded(
                     child: Text(job.title, style: Theme.of(context).textTheme.titleMedium),
                   ),
-                  IconButton(
-                    onPressed: onBookmark,
-                    icon: Icon(isBookmarked ? Icons.bookmark : Icons.bookmark_border),
-                  ),
+                  if (onBookmark != null)
+                    IconButton(
+                      onPressed: onBookmark,
+                      icon: Icon(isBookmarked ? Icons.bookmark : Icons.bookmark_border),
+                    ),
                 ],
               ),
               const SizedBox(height: 8),

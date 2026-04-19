@@ -1,3 +1,5 @@
+import '../core/json_converters.dart';
+
 class Job {
   final String id;
   final String recruiterId;
@@ -41,24 +43,24 @@ class Job {
 
   factory Job.fromJson(Map<String, dynamic> json) {
     return Job(
-      id: json['id'] as String,
-      recruiterId: json['recruiterId'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      requirements: json['requirements'] as String,
-      location: json['location'] as String,
-      jobType: json['jobType'] as String,
-      salaryMin: json['salaryMin'] is int ? json['salaryMin'] as int : null,
-      salaryMax: json['salaryMax'] is int ? json['salaryMax'] as int : null,
+      id: readString(json['id']),
+      recruiterId: readString(json['recruiterId']),
+      title: readString(json['title']),
+      description: readString(json['description']),
+      requirements: readString(json['requirements']),
+      location: readString(json['location']),
+      jobType: readString(json['jobType'], 'FULL_TIME'),
+      salaryMin: readInt(json['salaryMin']),
+      salaryMax: readInt(json['salaryMax']),
       skills: (json['skills'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
-      viewCount: json['viewCount'] as int,
-      isActive: json['isActive'] as bool,
+      viewCount: readInt(json['viewCount']) ?? 0,
+      isActive: readBool(json['isActive'], true),
       expiresAt: json['expiresAt'] as String?,
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String,
+      createdAt: readString(json['createdAt']),
+      updatedAt: readString(json['updatedAt']),
       recruiter: json['recruiter'] as Map<String, dynamic>?,
       count: json['_count'] as Map<String, dynamic>?,
-      matchScore: json['matchScore'] is int ? json['matchScore'] as int : null,
+      matchScore: readInt(json['matchScore']),
     );
   }
 

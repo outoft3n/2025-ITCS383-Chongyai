@@ -18,6 +18,8 @@ class _HomeTabState extends State<HomeTab> {
   List<Job> _jobs = [];
   bool _isLoading = true;
   String? _error;
+  bool _usingPublicJobFallback = false;
+  final Set<String> _bookmarkedJobIds = {};
 
   @override
   void initState() {
@@ -26,24 +28,74 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> _loadRecommendations() async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final jobs = await _apiService.getRecommendations();
-      setState(() {
+      _safeSetState(() {
         _jobs = jobs;
+        _usingPublicJobFallback = false;
       });
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
+      if (e is ApiException && e.statusCode == 402) {
+        try {
+          final jobs = await _apiService.getJobs(page: 1, limit: 20);
+          _safeSetState(() {
+            _jobs = jobs;
+            _error = null;
+            _usingPublicJobFallback = true;
+          });
+        } catch (e2) {
+          _safeSetState(() {
+            _error = e2.toString();
+            _usingPublicJobFallback = false;
+          });
+        }
+      } else {
+        _safeSetState(() {
+          _error = e.toString();
+          _usingPublicJobFallback = false;
+        });
+      }
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
+  }
+
+  Future<void> _toggleBookmark(Job job) async {
+    final already = _bookmarkedJobIds.contains(job.id);
+    try {
+      if (already) {
+        await _apiService.removeBookmark(job.id);
+      } else {
+        await _apiService.addBookmark(job.id);
+      }
+      _safeSetState(() {
+        if (already) {
+          _bookmarkedJobIds.remove(job.id);
+        } else {
+          _bookmarkedJobIds.add(job.id);
+        }
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(already ? 'Bookmark removed' : 'Bookmarked')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Bookmark failed: $e')),
+      );
     }
   }
 
@@ -85,14 +137,16 @@ class _HomeTabState extends State<HomeTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Recommended jobs',
+                            _usingPublicJobFallback ? 'Latest jobs' : 'Recommended jobs',
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Jobs hand-picked for you from the backend.',
+                            _usingPublicJobFallback
+                                ? 'Personalized recommendations need a paid plan. Showing open listings from the API instead.'
+                                : 'Jobs hand-picked for you from the backend.',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Colors.grey[600],
                                 ),
@@ -112,6 +166,8 @@ class _HomeTabState extends State<HomeTab> {
                       (job) => JobCard(
                         key: ValueKey(job.id),
                         job: job,
+                        isBookmarked: _bookmarkedJobIds.contains(job.id),
+                        onBookmark: () => _toggleBookmark(job),
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(

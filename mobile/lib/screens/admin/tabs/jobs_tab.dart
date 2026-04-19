@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../models/job.dart';
 import '../../../services/api_service.dart';
+import '../../../widgets/admin_section_header.dart';
 import '../../../widgets/loading_overlay.dart';
 
 class JobsTab extends StatefulWidget {
@@ -27,31 +28,32 @@ class _JobsTabState extends State<JobsTab> {
   }
 
   Future<void> _loadJobs({int page = 1}) async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final jobs = await _apiService.getJobs(page: page, limit: 20);
-      setState(() {
+      _safeSetState(() {
         _jobs = jobs;
         _total = jobs.length;
         _currentPage = page;
       });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-        });
-      }
+      _safeSetState(() {
+        _error = e.toString();
+      });
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      _safeSetState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
   }
 
   Future<void> _toggleJobActive(Job job) async {
@@ -93,6 +95,11 @@ class _JobsTabState extends State<JobsTab> {
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 16),
                 children: [
+                  const AdminSectionHeader(
+                    title: 'Jobs Control',
+                    subtitle: 'Audit and control all job postings',
+                    icon: Icons.work_history_outlined,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(

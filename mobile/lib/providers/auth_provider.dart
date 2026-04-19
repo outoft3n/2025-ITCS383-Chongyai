@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
 import '../services/api_service.dart';
+import '../services/token_storage.dart';
 import '../core/constants/api_constants.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -20,15 +21,29 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      token = prefs.getString(ApiConstants.tokenKey);
+      token = await TokenStorage.getToken();
 
-      final userJson = prefs.getString(ApiConstants.userKey);
-      if (userJson != null) {
+      final prefs = await SharedPreferences.getInstance();
+      if (token == null) {
+        currentUser = null;
+        await prefs.remove(ApiConstants.userKey);
+      } else {
+        final userJson = prefs.getString(ApiConstants.userKey);
+        if (userJson != null) {
+          try {
+            currentUser = User.fromJson(jsonDecode(userJson) as Map<String, dynamic>);
+          } catch (_) {
+            currentUser = null;
+          }
+        }
         try {
-          currentUser = User.fromJson(jsonDecode(userJson) as Map<String, dynamic>);
+          currentUser = await ApiService.instance.fetchCurrentUser();
+          await ApiService.instance.saveUser(currentUser!.toJson());
         } catch (_) {
+          await ApiService.instance.removeToken();
+          token = null;
           currentUser = null;
+          await prefs.remove(ApiConstants.userKey);
         }
       }
     } catch (error) {
