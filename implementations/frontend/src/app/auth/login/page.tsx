@@ -33,7 +33,10 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setError(null);
     try {
-      const res = await api.post<ApiResponse<LoginResponse>>('/auth/login', data);
+      const res = await api.post<ApiResponse<LoginResponse>>('/auth/login', {
+        email: data.email.trim(),
+        password: data.password,
+      });
       const { token, user } = res.data.data;
       login(token, user);
       router.replace(getDashboardPath(user.role));

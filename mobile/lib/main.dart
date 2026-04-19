@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -15,26 +16,40 @@ Future<void> main() async {
   runApp(const ChongyaiApp());
 }
 
-class ChongyaiApp extends StatelessWidget {
+class ChongyaiApp extends StatefulWidget {
   const ChongyaiApp({super.key});
 
   @override
+  State<ChongyaiApp> createState() => _ChongyaiAppState();
+}
+
+class _ChongyaiAppState extends State<ChongyaiApp> {
+  late final AuthProvider _auth;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = AuthProvider();
+    _router = AppRouter.router(_auth);
+    _auth.loadFromStorage();
+  }
+
+  @override
+  void dispose() {
+    _auth.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider()..loadFromStorage(),
-        ),
-      ],
-      child: Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          return MaterialApp.router(
-            title: 'Chongyai Jobs',
-            theme: AppTheme.theme,
-            routerConfig: AppRouter.router(authProvider),
-            debugShowCheckedModeBanner: false,
-          );
-        },
+    return ChangeNotifierProvider<AuthProvider>.value(
+      value: _auth,
+      child: MaterialApp.router(
+        title: 'Chongyai Jobs',
+        theme: AppTheme.theme,
+        routerConfig: _router,
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// Aligns with `implementations/frontend/tailwind.config.ts` (primary / accent).
 class AppTheme {
-  static const Color primary = Color(0xFFFF6B00);
-  static const Color secondary = Color(0xFFFFB800);
+  static const Color primary = Color(0xFFF97316);
+  static const Color accent = Color(0xFFEAB308);
+  static const Color secondary = accent;
 
   static final ThemeData theme = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
       seedColor: primary,
       primary: primary,
-      secondary: secondary,
+      secondary: accent,
     ),
     cardTheme: const CardThemeData(
       shape: RoundedRectangleBorder(
@@ -17,11 +19,21 @@ class AppTheme {
       ),
       elevation: 2,
     ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primary,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
         ),
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
@@ -29,10 +41,10 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: primary),
       ),
     ),

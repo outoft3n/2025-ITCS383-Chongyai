@@ -5,6 +5,10 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool obscureText;
   final TextInputType keyboardType;
+  final String? hintText;
+
+  /// When set, replaces the default "non-empty" validation.
+  final String? Function(String? value)? validator;
 
   const CustomTextField({
     super.key,
@@ -12,6 +16,8 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.hintText,
+    this.validator,
   });
 
   @override
@@ -20,15 +26,19 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return '$label is required';
-        }
-        return null;
-      },
+      validator: validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return '$label is required';
+            }
+            return null;
+          },
       decoration: InputDecoration(
         labelText: label,
-        border: const OutlineInputBorder(),
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }

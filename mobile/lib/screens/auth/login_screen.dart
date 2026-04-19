@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../widgets/auth_shell.dart';
 import '../../widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  static final _emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -24,75 +27,152 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() async {
+  Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     final authProvider = context.read<AuthProvider>();
     await authProvider.login(
       email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
+      password: _passwordController.text,
     );
-    if (authProvider.error != null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(authProvider.error!)));
-      }
-    }
-  }
-
-  void _fillDemo(String email, String password) {
-    _emailController.text = email;
-    _passwordController.text = password;
   }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
+    return AuthPageShell(
+      header: const AuthBrandHeader(
+        title: 'Welcome back',
+        subtitle: 'Sign in to your account',
+      ),
+      child: AuthCard(
+        children: [
+          if (authProvider.error != null) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF2F2),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFFECACA)),
+              ),
+              child: Text(
+                authProvider.error!,
+                style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 14),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomTextField(
+                  label: 'Email',
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  hintText: 'you@example.com',
+                  validator: (value) {
+                    final v = value?.trim() ?? '';
+                    if (v.isEmpty) return 'Email is required';
+                    if (!_emailRegex.hasMatch(v)) return 'Invalid email address';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  label: 'Password',
+                  controller: _passwordController,
+                  obscureText: true,
+                  hintText: '••••••••',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return 'Password is required';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                FilledButton(
+                  onPressed: authProvider.isLoading ? null : _login,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: authProvider.isLoading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text('Sign In'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 4,
             children: [
-              const SizedBox(height: 16),
-              CustomTextField(label: 'Email', controller: _emailController, keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 16),
-              CustomTextField(label: 'Password', controller: _passwordController, obscureText: true),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: authProvider.isLoading ? null : _login,
-                child: authProvider.isLoading ? const CircularProgressIndicator() : const Text('Login'),
+              Text(
+                "Don't have an account?",
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
-              const SizedBox(height: 24),
-              const Text('Demo logins', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  OutlinedButton(
-                    onPressed: () => _fillDemo('applicant1@email.com', 'Applicant@123'),
-                    child: const Text('Applicant'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () => _fillDemo('recruiter1@email.com', 'Recruiter@123'),
-                    child: const Text('Recruiter'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () => _fillDemo('admin@chongyai.com', 'Admin@123'),
-                    child: const Text('Admin'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
               TextButton(
                 onPressed: () => context.go('/auth/register'),
-                child: const Text('Create an account'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  'Sign up',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7ED),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFFFEDD5)),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Demo Accounts',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFFC2410C),
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  'Applicant: applicant1@email.com / Applicant@123',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Recruiter: recruiter1@techcorp.com / Recruiter@123',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Admin: admin@chongyai.com / Admin@123',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

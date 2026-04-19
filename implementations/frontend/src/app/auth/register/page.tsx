@@ -43,8 +43,18 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterForm) => {
     setError(null);
+    // Same shape as mobile + backend `RegisterSchema` (no `confirmPassword` in the request body)
+    const company = data.companyName?.trim();
+    const payload = {
+      email: data.email.trim(),
+      password: data.password,
+      role: data.role,
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      ...(company ? { companyName: company } : {}),
+    };
     try {
-      const res = await api.post<ApiResponse<LoginResponse>>('/auth/register', data);
+      const res = await api.post<ApiResponse<LoginResponse>>('/auth/register', payload);
       const { token, user } = res.data.data;
       login(token, user);
       router.replace(getDashboardPath(user.role));

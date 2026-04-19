@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
 import '../../screens/admin/admin_home_screen.dart';
@@ -26,10 +25,13 @@ class AppRouter {
         GoRoute(path: '/conference', builder: (context, state) => const ConferenceScreen()),
       ],
       redirect: (context, state) {
+        if (authProvider.isLoading) {
+          return null;
+        }
         final loggedIn = authProvider.isAuthenticated;
         final currentPath = state.uri.path;
         final loggingIn = currentPath == '/auth/login' || currentPath == '/auth/register';
-        if (!loggedIn && !loggingIn && currentPath != '/') {
+        if (!loggedIn && !loggingIn) {
           return '/auth/login';
         }
         if (loggedIn && (currentPath == '/auth/login' || currentPath == '/auth/register' || currentPath == '/')) {
