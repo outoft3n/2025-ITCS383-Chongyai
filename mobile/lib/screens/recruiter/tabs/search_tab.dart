@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/job.dart';
+import '../../recruiter/applicant_detail_screen.dart';
 import '../../../services/api_service.dart';
 import '../../../widgets/loading_overlay.dart';
 
@@ -263,7 +265,11 @@ class _SearchTabState extends State<SearchTab> {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        // Navigate to applicant profile
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => ApplicantDetailScreen(applicant: applicant),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -329,35 +335,117 @@ class _SearchTabState extends State<SearchTab> {
   }
 
   void _showInviteDialog(Map<String, dynamic> applicant) {
+    final messageController = TextEditingController();
+    List<Job> jobs = [];
+    Job? selectedJob;
+    bool isLoadingJobs = true;
+    bool isSending = false;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Send Job Invitation'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Invite ${applicant['firstName']} ${applicant['lastName']} to apply for a job?'),
-            const SizedBox(height: 16),
-            // TODO: Add job selection and message input
-            const Text('Job selection and message input to be implemented'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Implement send invitation
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Invitation feature to be implemented')),
-              );
-            },
-            child: const Text('Send'),
-          ),
-        ],
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          Future<void> loadJobsIfNeeded() async {
+            if (!isLoadingJobs) return;
+            try {
+              final fetched = await _apiService.getRecruiterJobs(page: 1, limit: 50);
+              if (!mounted) return;
+              setDialogState(() {
+                jobs = fetched.where((job) => job.isActive).toList();
+                selectedJob = jobs.isNotEmpty ? jobs.first : null;
+                isLoadingJobs = false;
+              });
+            } catch (_) {
+              if (!mounted) return;
+              setDialogState(() {
+                isLoadingJobs = false;
+              });
+            }
+          }
+
+          loadJobsIfNeeded();
+
+          return AlertDialog(
+            title: const Text('Send Job Invitation'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Invite ${applicant['firstName']} ${applicant['lastName']} to apply for a job'),
+                  const SizedBox(height: 12),
+                  if (isLoadingJobs)
+                    const Center(child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: CircularProgressIndicator(),
+                    ))
+                  else if (jobs.isEmpty)
+                    const Text('No active jobs available. Please post a job first.')
+                  else
+                    DropdownButtonFormField<Job>(
+                      value: selectedJob,
+                      decoration: const InputDecoration(
+                        labelText: 'Select job',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: jobs
+                          .map((job) => DropdownMenuItem<Job>(
+                                value: job,
+                                child: Text(job.title, overflow: TextOverflow.ellipsis),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setDialogState(() {
+                          selectedJob = value;
+                        });
+                      },
+                    ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: messageController,
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      labelText: 'Message (optional)',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSending ? null : () => Navigator.pop(dialogContext),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: isSending || selectedJob == null
+                    ? null
+                    : () async {
+                        setDialogState(() => isSending = true);
+                        try {
+                          await _apiService.sendInvitation(
+                            applicantId: applicant['id'] as String,
+                            jobId: selectedJob!.id,
+                            message: messageController.text.trim().isEmpty ? null : messageController.text.trim(),
+                          );
+                          if (!mounted) return;
+                          Navigator.pop(dialogContext);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Invitation sent successfully')),
+                          );
+                        } catch (e) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Failed to send invitation: $e')),
+                          );
+                          setDialogState(() => isSending = false);
+                        }
+                      },
+                child: Text(isSending ? 'Sending...' : 'Send'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

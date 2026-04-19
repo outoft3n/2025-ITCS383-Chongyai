@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/invitation.dart';
+import '../applicant_detail_screen.dart';
 import '../../../services/api_service.dart';
 import '../../../widgets/loading_overlay.dart';
 
@@ -18,6 +19,11 @@ class _InvitationsTabState extends State<InvitationsTab> {
   bool _isLoading = true;
   String? _error;
 
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -25,22 +31,22 @@ class _InvitationsTabState extends State<InvitationsTab> {
   }
 
   Future<void> _loadInvitations() async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final invitations = await _apiService.getSentInvitations();
-      setState(() {
+      _safeSetState(() {
         _invitations = invitations;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
     }
@@ -218,7 +224,13 @@ class _InvitationsTabState extends State<InvitationsTab> {
                     const SizedBox(height: 8),
                     OutlinedButton(
                       onPressed: () {
-                        // Navigate to applicant profile
+                        final applicant = invitation.applicant;
+                        if (applicant == null) return;
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => ApplicantDetailScreen(applicant: applicant),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

@@ -17,6 +17,8 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
   bool _isApplying = false;
   bool _isBookmarking = false;
   bool _bookmarked = false;
+  bool _loadingSimilar = false;
+  List<Job> _similarJobs = [];
 
   Job get job => widget.job;
 
@@ -24,6 +26,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
   void initState() {
     super.initState();
     _loadBookmarkState();
+    _loadSimilarJobs();
   }
 
   Future<void> _loadBookmarkState() async {
@@ -33,6 +36,23 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
       setState(() => _bookmarked = bookmarked);
     } catch (_) {
       // ignore: non-critical (icon just won't reflect server state)
+    }
+  }
+
+  Future<void> _loadSimilarJobs() async {
+    setState(() => _loadingSimilar = true);
+    try {
+      final jobs = await _api.getSimilarJobs(job.id);
+      if (!mounted) return;
+      setState(() {
+        _similarJobs = jobs.where((j) => j.id != job.id).toList();
+      });
+    } catch (_) {
+      // Keep UI resilient if recommendation endpoint is unavailable.
+    } finally {
+      if (mounted) {
+        setState(() => _loadingSimilar = false);
+      }
     }
   }
 
@@ -165,6 +185,39 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                 children: job.skills.map((skill) => Chip(label: Text(skill))).toList(),
               ),
             ],
+            const SizedBox(height: 24),
+            Text('Similar jobs', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            if (_loadingSimilar)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: LinearProgressIndicator(),
+              )
+            else if (_similarJobs.isEmpty)
+              Text(
+                'No similar jobs found right now.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              )
+            else
+              ..._similarJobs.take(5).map(
+                (similar) => Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: ListTile(
+                    title: Text(similar.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    subtitle: Text(
+                      '${similar.location} • ${similar.jobType.replaceAll('_', ' ').toLowerCase()}',
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => JobDetailScreen(job: similar),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             const SizedBox(height: 32),
             FilledButton(
               onPressed: _isApplying ? null : _apply,
