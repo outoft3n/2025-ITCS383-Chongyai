@@ -17,6 +17,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
   List<Invitation> _invitations = [];
   bool _isLoading = true;
   String? _error;
+  final Set<String> _respondingInvitationIds = {};
 
   @override
   void initState() {
@@ -52,14 +53,37 @@ class _InvitationsTabState extends State<InvitationsTab> {
   }
 
   Future<void> _respondToInvitation(String invitationId, String status) async {
+    if (_respondingInvitationIds.contains(invitationId)) {
+      return;
+    }
+
+    _safeSetState(() {
+      _respondingInvitationIds.add(invitationId);
+    });
+
     try {
       await _apiService.respondToInvitation(invitationId, status);
-      await _loadInvitations(); // Refresh list
-    } catch (e) {
+      await _loadInvitations();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to respond: $e')),
+        SnackBar(content: Text('Invitation ${status.toLowerCase()} successfully.')),
       );
+    } catch (e) {
+      if (!mounted) return;
+      if (e is ApiException && e.statusCode == 409) {
+        await _loadInvitations();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('This invitation has already been responded to.')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to respond: $e')),
+        );
+      }
+    } finally {
+      _safeSetState(() {
+        _respondingInvitationIds.remove(invitationId);
+      });
     }
   }
 
