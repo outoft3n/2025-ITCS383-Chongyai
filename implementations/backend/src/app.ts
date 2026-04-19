@@ -22,15 +22,34 @@ import conferenceRouter from './routes/conference.routes';
 import invitationsRouter from './routes/invitations.routes';
 
 const app = express();
-
+app.set('trust proxy', 1);
 // Security middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  }),
-);
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      'http://localhost:3000',   // Next.js frontend local
+      'http://localhost:8080',   // Flutter web local
+      'http://10.0.2.2:4000',   // Android emulator
+    ];
+
+    // Allow any Codespace URL (*.app.github.dev)
+    const isCodespace = origin.endsWith('.app.github.dev');
+
+    if (allowedOrigins.includes(origin) || isCodespace) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.options('*', cors());
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
