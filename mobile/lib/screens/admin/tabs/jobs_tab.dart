@@ -18,7 +18,6 @@ class _JobsTabState extends State<JobsTab> {
   bool _isLoading = true;
   String? _error;
   int _currentPage = 1;
-  int _totalPages = 1;
   int _total = 0;
 
   @override
@@ -38,17 +37,20 @@ class _JobsTabState extends State<JobsTab> {
       setState(() {
         _jobs = jobs;
         _total = jobs.length;
-        _currentPage = 1;
-        _totalPages = 1; // Assuming no pagination for now
+        _currentPage = page;
       });
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+        });
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -57,6 +59,7 @@ class _JobsTabState extends State<JobsTab> {
       await _apiService.updateJob(job.id, {'isActive': !job.isActive});
       await _loadJobs(page: _currentPage);
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update job: $e')),
       );
@@ -199,9 +202,9 @@ class _JobsTabState extends State<JobsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: Colors.blue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+        border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
       ),
       child: Text(
         jobType,
@@ -218,10 +221,10 @@ class _JobsTabState extends State<JobsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isActive ? Colors.green.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+        color: isActive ? Colors.green.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isActive ? Colors.green.withOpacity(0.3) : Colors.grey.withOpacity(0.3),
+          color: isActive ? Colors.green.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3),
         ),
       ),
       child: Text(

@@ -16,8 +16,6 @@ class RecruiterHomeScreen extends StatefulWidget {
 }
 
 class _RecruiterHomeScreenState extends State<RecruiterHomeScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _tabs = const [
     MyJobsTab(),
     PostJobTab(),

@@ -100,7 +100,7 @@ class User {
   final bool isVerified;
   final bool isPaid;
   final String? profileImageUrl;
-  final String createdAt;
+  final String? createdAt;
   final String? updatedAt;
   final ApplicantProfile? applicantProfile;
   final RecruiterProfile? recruiterProfile;
@@ -113,9 +113,9 @@ class User {
     required this.lastName,
     required this.isVerified,
     required this.isPaid,
-    required this.createdAt,
     this.phone,
     this.profileImageUrl,
+    this.createdAt,
     this.updatedAt,
     this.applicantProfile,
     this.recruiterProfile,
@@ -132,7 +132,7 @@ class User {
       isVerified: json['isVerified'] as bool,
       isPaid: json['isPaid'] as bool,
       profileImageUrl: json['profileImageUrl'] as String?,
-      createdAt: json['createdAt'] as String,
+      createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
       applicantProfile: json['applicantProfile'] != null
           ? ApplicantProfile.fromJson(json['applicantProfile'] as Map<String, dynamic>)

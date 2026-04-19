@@ -102,7 +102,7 @@ class ApiService {
       'role': role,
       'firstName': firstName,
       'lastName': lastName,
-      if (companyName != null) 'companyName': companyName,
+      'companyName': ?companyName,
     }, auth: false);
     return response;
   }
@@ -176,7 +176,7 @@ class ApiService {
   Future<Application> applyJob(String jobId, {String? coverLetter}) async {
     final response = await _request('/applications', method: 'POST', body: {
       'jobId': jobId,
-      if (coverLetter != null) 'coverLetter': coverLetter,
+      'coverLetter': ?coverLetter,
     });
     final data = response['data'] ?? response;
     return Application.fromJson(data as Map<String, dynamic>);
@@ -346,7 +346,7 @@ class ApiService {
   }) async {
     final response = await _request('/conference/rooms', method: 'POST', body: {
       'title': title,
-      if (interviewId != null) 'interviewId': interviewId,
+      'interviewId': ?interviewId,
     });
     return response['data'] as Map<String, dynamic>;
   }
@@ -406,7 +406,7 @@ class ApiService {
     final response = await _request('/invitations', method: 'POST', body: {
       'applicantId': applicantId,
       'jobId': jobId,
-      if (message != null) 'message': message,
+      'message': ?message,
     });
     final data = response['data'] ?? response;
     return Invitation.fromJson(data as Map<String, dynamic>);
@@ -446,9 +446,9 @@ class ApiService {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      if (q != null) 'q': q,
-      if (jobType != null) 'jobType': jobType,
-      if (location != null) 'location': location,
+      'q': ?q,
+      'jobType': ?jobType,
+      'location': ?location,
       if (salaryMin != null) 'salaryMin': salaryMin.toString(),
       if (salaryMax != null) 'salaryMax': salaryMax.toString(),
       if (skills != null && skills.isNotEmpty) 'skills': skills.join(','),
@@ -471,11 +471,11 @@ class ApiService {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      if (q != null) 'q': q,
-      if (skills != null) 'skills': skills,
-      if (location != null) 'location': location,
-      if (education != null) 'education': education,
-      if (experience != null) 'experience': experience,
+      'q': ?q,
+      'skills': ?skills,
+      'location': ?location,
+      'education': ?education,
+      'experience': ?experience,
     };
     final queryString = queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&');
     final response = await _request('/search/applicants?$queryString');

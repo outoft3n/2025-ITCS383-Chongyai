@@ -154,7 +154,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   child: Text(
                     '${invitation.applicant?['firstName']?[0]}${invitation.applicant?['lastName']?[0]}',
                     style: TextStyle(
@@ -193,7 +193,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
                               skill as String,
                               style: const TextStyle(fontSize: 10),
                             ),
-                            backgroundColor: Colors.grey.withOpacity(0.1),
+                            backgroundColor: Colors.grey.withValues(alpha: 0.1),
                             padding: EdgeInsets.zero,
                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           )).toList(),
@@ -220,11 +220,11 @@ class _InvitationsTabState extends State<InvitationsTab> {
                       onPressed: () {
                         // Navigate to applicant profile
                       },
-                      child: Text('View Profile'),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         textStyle: const TextStyle(fontSize: 12),
                       ),
+                      child: Text('View Profile'),
                     ),
                   ],
                 ),
@@ -256,7 +256,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
                                 invitation.job!['jobType'],
                                 style: const TextStyle(fontSize: 12),
                               ),
-                              backgroundColor: Colors.blue.withOpacity(0.1),
+                              backgroundColor: Colors.blue.withValues(alpha: 0.1),
                               labelStyle: TextStyle(color: Colors.blue[700]),
                               padding: EdgeInsets.zero,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -288,7 +288,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -309,10 +309,10 @@ class _InvitationsTabState extends State<InvitationsTab> {
                   onPressed: () {
                     // Navigate to job applications
                   },
-                  child: Text('View Application'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
+                  child: Text('View Application'),
                 ),
               ),
             ],
@@ -346,9 +346,9 @@ class _InvitationsTabState extends State<InvitationsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

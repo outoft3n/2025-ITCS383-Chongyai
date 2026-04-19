@@ -17,8 +17,6 @@ class _ApplicationsTabState extends State<ApplicationsTab> {
   List<Application> _applications = [];
   bool _isLoading = true;
   String? _error;
-  int _currentPage = 1;
-  int _totalPages = 1;
   int _total = 0;
 
   @override
@@ -27,29 +25,32 @@ class _ApplicationsTabState extends State<ApplicationsTab> {
     _loadApplications();
   }
 
-  Future<void> _loadApplications({int page = 1}) async {
-    setState(() {
+  Future<void> _loadApplications() async {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final applications = await _apiService.getMyApplications();
-      setState(() {
+      _safeSetState(() {
         _applications = applications;
         _total = applications.length;
-        _currentPage = 1;
-        _totalPages = 1; // Assuming no pagination for now
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
   }
 
   @override

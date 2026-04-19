@@ -25,25 +25,30 @@ class _InterviewsTabState extends State<InterviewsTab> {
   }
 
   Future<void> _loadInterviews() async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final interviews = await _apiService.getMyInterviews();
-      setState(() {
+      _safeSetState(() {
         _interviews = interviews;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
   }
 
   @override
@@ -235,9 +240,9 @@ class _InterviewsTabState extends State<InterviewsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         status,

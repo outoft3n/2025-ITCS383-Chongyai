@@ -25,25 +25,30 @@ class _InvitationsTabState extends State<InvitationsTab> {
   }
 
   Future<void> _loadInvitations() async {
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
       final invitations = await _apiService.getMyInvitations();
-      setState(() {
+      _safeSetState(() {
         _invitations = invitations;
       });
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _error = e.toString();
       });
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
   }
 
   Future<void> _respondToInvitation(String invitationId, String status) async {
@@ -51,6 +56,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
       await _apiService.respondToInvitation(invitationId, status);
       await _loadInvitations(); // Refresh list
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to respond: $e')),
       );
@@ -139,7 +145,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   child: Icon(
                     Icons.business,
                     color: Theme.of(context).colorScheme.primary,
@@ -176,7 +182,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
+                color: Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -199,7 +205,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
                             invitation.job!['jobType'],
                             style: const TextStyle(fontSize: 12),
                           ),
-                          backgroundColor: Colors.blue.withOpacity(0.1),
+                          backgroundColor: Colors.blue.withValues(alpha: 0.1),
                           labelStyle: TextStyle(color: Colors.blue[700]),
                           padding: EdgeInsets.zero,
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -238,7 +244,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -335,9 +341,9 @@ class _InvitationsTabState extends State<InvitationsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

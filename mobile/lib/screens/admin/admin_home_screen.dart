@@ -15,8 +15,6 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _tabs = const [
     DashboardTab(),
     JobsTab(),

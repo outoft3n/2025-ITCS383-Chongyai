@@ -210,7 +210,7 @@ class _SearchTabState extends State<SearchTab> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   child: Text(
                     '${applicant['firstName'][0]}${applicant['lastName'][0]}',
                     style: TextStyle(
@@ -260,11 +260,11 @@ class _SearchTabState extends State<SearchTab> {
                       onPressed: () {
                         // Navigate to applicant profile
                       },
-                      child: const Text('View Profile'),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         textStyle: const TextStyle(fontSize: 12),
                       ),
+                      child: const Text('View Profile'),
                     ),
                     const SizedBox(height: 8),
                     ElevatedButton.icon(
@@ -293,7 +293,7 @@ class _SearchTabState extends State<SearchTab> {
                     skill as String,
                     style: const TextStyle(fontSize: 10),
                   ),
-                  backgroundColor: Colors.grey.withOpacity(0.1),
+                  backgroundColor: Colors.grey.withValues(alpha: 0.1),
                   padding: EdgeInsets.zero,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 )).toList(),

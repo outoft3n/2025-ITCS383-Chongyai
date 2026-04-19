@@ -17,8 +17,6 @@ class _PaymentsTabState extends State<PaymentsTab> {
   List<Payment> _payments = [];
   bool _isLoading = true;
   String? _error;
-  int _currentPage = 1;
-  int _totalPages = 1;
   int _total = 0;
 
   @override
@@ -27,19 +25,17 @@ class _PaymentsTabState extends State<PaymentsTab> {
     _loadPayments();
   }
 
-  Future<void> _loadPayments({int page = 1}) async {
+  Future<void> _loadPayments() async {
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
-      final payments = await _apiService.getAllPayments(page: page, limit: 20);
+      final payments = await _apiService.getAllPayments(limit: 20);
       setState(() {
         _payments = payments;
         _total = payments.length;
-        _currentPage = 1;
-        _totalPages = 1; // Assuming no pagination for now
       });
     } catch (e) {
       setState(() {
@@ -203,9 +199,9 @@ class _PaymentsTabState extends State<PaymentsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         status,
