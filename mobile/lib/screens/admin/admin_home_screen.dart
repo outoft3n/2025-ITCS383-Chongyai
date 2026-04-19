@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'tabs/dashboard_tab.dart';
+import 'tabs/jobs_tab.dart';
+import 'tabs/payments_tab.dart';
+import 'tabs/profile_tab.dart';
 import 'tabs/reports_tab.dart';
 import 'tabs/users_tab.dart';
-import 'tabs/profile_tab.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -15,8 +17,10 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int _currentIndex = 0;
 
-  static const List<Widget> _tabs = [
+  final List<Widget> _tabs = const [
     DashboardTab(),
+    JobsTab(),
+    PaymentsTab(),
     UsersTab(),
     ReportsTab(),
     ProfileTab(),
@@ -24,17 +28,26 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _tabs[_currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) => setState(() => _currentIndex = index),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard), label: 'Dashboard'),
-          NavigationDestination(icon: Icon(Icons.group), label: 'Users'),
-          NavigationDestination(icon: Icon(Icons.bar_chart), label: 'Reports'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+    return DefaultTabController(
+      length: _tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Admin Dashboard'),
+          bottom: TabBar(
+            isScrollable: true,
+            tabs: const [
+              Tab(text: 'Dashboard'),
+              Tab(text: 'Jobs'),
+              Tab(text: 'Payments'),
+              Tab(text: 'Users'),
+              Tab(text: 'Reports'),
+              Tab(text: 'Profile'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: _tabs,
+        ),
       ),
     );
   }

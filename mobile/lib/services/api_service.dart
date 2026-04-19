@@ -8,6 +8,7 @@ import '../models/application.dart';
 import '../models/bookmark.dart';
 import '../models/job.dart';
 import '../models/interview.dart';
+import '../models/invitation.dart';
 import '../models/message.dart';
 import '../models/payment.dart';
 import '../models/user.dart';
@@ -394,5 +395,120 @@ class ApiService {
   Future<Map<String, dynamic>> getReportPayments() async {
     final response = await _request('/reports/payments');
     return response['data'] as Map<String, dynamic>;
+  }
+
+  // Invitations
+  Future<Invitation> sendInvitation({
+    required String applicantId,
+    required String jobId,
+    String? message,
+  }) async {
+    final response = await _request('/invitations', method: 'POST', body: {
+      'applicantId': applicantId,
+      'jobId': jobId,
+      if (message != null) 'message': message,
+    });
+    final data = response['data'] ?? response;
+    return Invitation.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<List<Invitation>> getSentInvitations({int page = 1, int limit = 20}) async {
+    final response = await _request('/invitations?page=$page&limit=$limit');
+    final data = (response['data'] as List<dynamic>?) ?? [];
+    return data.map((item) => Invitation.fromJson(item as Map<String, dynamic>)).toList();
+  }
+
+  Future<List<Invitation>> getMyInvitations() async {
+    final response = await _request('/invitations/received');
+    final data = (response['data'] as List<dynamic>?) ?? [];
+    return data.map((item) => Invitation.fromJson(item as Map<String, dynamic>)).toList();
+  }
+
+  Future<Invitation> respondToInvitation(String invitationId, String status) async {
+    final response = await _request('/invitations/$invitationId/respond', method: 'PUT', body: {
+      'status': status,
+    });
+    final data = response['data'] ?? response;
+    return Invitation.fromJson(data as Map<String, dynamic>);
+  }
+
+  // Search
+  Future<List<Job>> searchJobs({
+    String? q,
+    String? jobType,
+    String? location,
+    int? salaryMin,
+    int? salaryMax,
+    List<String>? skills,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+      if (q != null) 'q': q,
+      if (jobType != null) 'jobType': jobType,
+      if (location != null) 'location': location,
+      if (salaryMin != null) 'salaryMin': salaryMin.toString(),
+      if (salaryMax != null) 'salaryMax': salaryMax.toString(),
+      if (skills != null && skills.isNotEmpty) 'skills': skills.join(','),
+    };
+    final queryString = queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&');
+    final response = await _request('/search/jobs?$queryString');
+    final data = (response['data'] as List<dynamic>?) ?? [];
+    return data.map((item) => Job.fromJson(item as Map<String, dynamic>)).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> searchApplicants({
+    String? q,
+    String? skills,
+    String? location,
+    String? education,
+    String? experience,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+      if (q != null) 'q': q,
+      if (skills != null) 'skills': skills,
+      if (location != null) 'location': location,
+      if (education != null) 'education': education,
+      if (experience != null) 'experience': experience,
+    };
+    final queryString = queryParams.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&');
+    final response = await _request('/search/applicants?$queryString');
+    final data = (response['data'] as List<dynamic>?) ?? [];
+    return data.map((item) => item as Map<String, dynamic>).toList();
+  }
+
+  // Users
+  Future<List<User>> getUsers({int page = 1, int limit = 20}) async {
+    final response = await _request('/users?page=$page&limit=$limit');
+    final data = (response['data'] as List<dynamic>?) ?? [];
+    return data.map((item) => User.fromJson(item as Map<String, dynamic>)).toList();
+  }
+
+  Future<User> getUserById(String userId) async {
+    final response = await _request('/users/$userId');
+    final data = response['data'] ?? response;
+    return User.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<User> getProfile() async {
+    final response = await _request('/users/profile');
+    final data = response['data'] ?? response;
+    return User.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<User> updateUser(String userId, Map<String, dynamic> payload) async {
+    final response = await _request('/users/$userId', method: 'PUT', body: payload);
+    final data = response['data'] ?? response;
+    return User.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<void> deleteUser(String userId) async {
+    await _request('/users/$userId', method: 'DELETE');
   }
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'tabs/applicants_tab.dart';
+import 'tabs/interviews_tab.dart';
+import 'tabs/invitations_tab.dart';
 import 'tabs/my_jobs_tab.dart';
 import 'tabs/post_job_tab.dart';
 import 'tabs/profile_tab.dart';
+import 'tabs/search_tab.dart';
 
 class RecruiterHomeScreen extends StatefulWidget {
   const RecruiterHomeScreen({super.key});
@@ -15,26 +18,39 @@ class RecruiterHomeScreen extends StatefulWidget {
 class _RecruiterHomeScreenState extends State<RecruiterHomeScreen> {
   int _currentIndex = 0;
 
-  static const List<Widget> _tabs = [
+  final List<Widget> _tabs = const [
     MyJobsTab(),
     PostJobTab(),
     ApplicantsTab(),
+    InterviewsTab(),
+    InvitationsTab(),
+    SearchTab(),
     ProfileTab(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _tabs[_currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) => setState(() => _currentIndex = index),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.work_outline), label: 'Jobs'),
-          NavigationDestination(icon: Icon(Icons.post_add), label: 'Post Job'),
-          NavigationDestination(icon: Icon(Icons.people), label: 'Applicants'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+    return DefaultTabController(
+      length: _tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Recruiter Dashboard'),
+          bottom: TabBar(
+            isScrollable: true,
+            tabs: const [
+              Tab(text: 'Jobs'),
+              Tab(text: 'Post Job'),
+              Tab(text: 'Applicants'),
+              Tab(text: 'Interviews'),
+              Tab(text: 'Invitations'),
+              Tab(text: 'Search'),
+              Tab(text: 'Profile'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: _tabs,
+        ),
       ),
     );
   }

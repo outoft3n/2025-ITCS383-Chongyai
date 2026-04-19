@@ -1,5 +1,3 @@
-import 'user.dart';
-
 class Job {
   final String id;
   final String recruiterId;
