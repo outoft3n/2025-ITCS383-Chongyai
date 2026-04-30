@@ -8,7 +8,7 @@ on:
 
 jobs:
   mobile:
-    name: Mobile - Analyze & Test
+    name: Mobile - Analyze, Test & Coverage
     runs-on: ubuntu-latest
 
     defaults:
@@ -30,11 +30,19 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      - name: Test
-        run: flutter test
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload mobile coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-coverage
+          path: mobile/coverage/lcov.info
+          if-no-files-found: ignore
+
 
   frontend:
-    name: Frontend - Build & Test
+    name: Frontend - Build, Test & Coverage
     runs-on: ubuntu-latest
 
     defaults:
@@ -60,13 +68,21 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test -- --ci --passWithNoTests
+      - name: Test with coverage
+        run: npm run test -- --coverage --ci --passWithNoTests
         env:
           CI: true
 
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: implementations/frontend/coverage/lcov.info
+          if-no-files-found: ignore
+
+
   backend:
-    name: Backend - Build & Test
+    name: Backend - Build, Test & Coverage
     runs-on: ubuntu-latest
 
     defaults:
@@ -100,12 +116,13 @@ jobs:
         env:
           CI: true
 
-      - name: Upload coverage
+      - name: Upload backend coverage
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: implementations/backend/coverage/lcov.info
           if-no-files-found: ignore
+
 
   sonarcloud:
     name: SonarCloud Scan
@@ -117,7 +134,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download coverage
+      # 🔽 โหลด coverage จากทุก service
+      - name: Download mobile coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: mobile-coverage
+          path: mobile/coverage
+        continue-on-error: true
+
+      - name: Download frontend coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage
+          path: implementations/frontend/coverage
+        continue-on-error: true
+
+      - name: Download backend coverage
         uses: actions/download-artifact@v4
         with:
           name: backend-coverage
@@ -130,9 +162,14 @@ jobs:
           args: >
             -Dsonar.projectKey=outoft3n_2025-ITCS383-Chongyai3
             -Dsonar.organization=outoft3n
+            -Dsonar.projectVersion=${{ github.run_number }}
+
             -Dsonar.sources=.
             -Dsonar.exclusions=**/node_modules/**,**/*.test.*,mobile/test/**
-            -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info
+
+            -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
+            -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
+
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
             -Dsonar.objc.file.suffixes=-
