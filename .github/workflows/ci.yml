@@ -134,11 +134,16 @@ jobs:
             -Dsonar.tests=implementations/backend/src,implementations/frontend/src,mobile/test
             -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
 
+            # JS coverage (frontend + backend)
             -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
+
+            # Dart coverage
             -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
 
+            # ignore junk
             -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
+            # ปิดภาษาไม่ใช้
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
             -Dsonar.objc.file.suffixes=-
