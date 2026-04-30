@@ -2,7 +2,7 @@
 
 ## Artifact Legend
 
-### Requirements (from 3 Features)
+### Requirements
 
 **Feature 1 — Mobile Client App (Mandatory)**
 - R1: Mobile App Core Features
@@ -17,7 +17,7 @@
 - R6: Similar Jobs on Job Detail Page (Web)
 - R7: Similar Jobs on Job Detail Page (Mobile)
 
-### Design (C4 Container Diagram — merged)
+### Design
 - D1: Web Frontend (Next.js)
 - D2: Backend (Express — includes all REST API routes)
 - D3: Chatbot Service
