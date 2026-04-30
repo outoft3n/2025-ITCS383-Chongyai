@@ -34,6 +34,7 @@ app.use(cors({
       'http://localhost:3000',   // Next.js frontend local
       'http://localhost:8080',   // Flutter web local
       'http://10.0.2.2:4000',   // Android emulator
+      'https://2025-itcs-383-chongyai.vercel.app', // Vercel production
     ];
 
     // Allow any Codespace URL (*.app.github.dev)
