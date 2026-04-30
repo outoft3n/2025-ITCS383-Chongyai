@@ -693,7 +693,7 @@ C14 -.-> T4
 ```
 ---
 
-### R8: Backend Test Coverage Expansion
+### R8: CI/CD & Quality Gate
 
 ```mermaid
 graph LR
