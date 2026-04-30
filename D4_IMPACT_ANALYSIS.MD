@@ -717,7 +717,6 @@ C16 -.-> T9
  
 ## Directed Graph of SLOs
  
-Each node represents a backend code module (SLO). An edge `A → B` means module A queries a Prisma model owned by module B, derived directly from each route's Prisma queries cross-referenced with the schema.
  
 - SLO1: Auth Module
 - SLO2: Users Module
@@ -733,45 +732,9 @@ Each node represents a backend code module (SLO). An edge `A → B` means module
 - SLO12: Reports Module
 - SLO13: Recommendations Module
 - SLO14: Invitations Module
-```mermaid
-flowchart LR
- 
-SLO1((SLO1))
-SLO2((SLO2))
-SLO3((SLO3))
-SLO4((SLO4))
-SLO5((SLO5))
-SLO6((SLO6))
-SLO7((SLO7))
-SLO8((SLO8))
-SLO9((SLO9))
-SLO10((SLO10))
-SLO11((SLO11))
-SLO12((SLO12))
-SLO13((SLO13))
-SLO14((SLO14))
- 
-SLO1 --> SLO2
-SLO4 --> SLO3
-SLO5 --> SLO3
-SLO5 --> SLO2
-SLO6 --> SLO3
-SLO7 --> SLO4
-SLO8 --> SLO4
-SLO8 --> SLO2
-SLO10 --> SLO7
-SLO11 --> SLO2
-SLO12 --> SLO3
-SLO12 --> SLO4
-SLO12 --> SLO8
-SLO12 --> SLO2
-SLO13 --> SLO3
-SLO13 --> SLO4
-SLO13 --> SLO2
-SLO14 --> SLO3
-SLO14 --> SLO4
-SLO14 --> SLO2
-```
+
+
+![Directed_graph.png](./images/Directed_graph.png)
  
 ---
  
@@ -793,8 +756,6 @@ SLO14 --> SLO2
 | **SLO12** | | 1 | 1 | 1 | | | | 1 | | | | - | | |
 | **SLO13** | | 1 | 1 | 1 | | | | | | | | | - | |
 | **SLO14** | | 1 | 1 | 1 | | | | | | | | | | - |
-
-![Directed_graph.png](./images/Directed_graph.png)
 
 ---
 
