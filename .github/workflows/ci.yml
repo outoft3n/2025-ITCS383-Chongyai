@@ -7,6 +7,9 @@ on:
     branches: ["master"]
 
 jobs:
+  # =========================
+  # MOBILE
+  # =========================
   mobile:
     name: Mobile - Analyze & Coverage
     runs-on: ubuntu-latest
@@ -26,12 +29,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Allow warnings without failing the pipeline
       - name: Analyze
         run: flutter analyze
         continue-on-error: true
 
-      # 👉 generate coverage (lcov)
-      - name: Test with coverage
+      - name: Run tests with coverage
         run: flutter test --coverage
 
       - name: Upload mobile coverage
@@ -41,6 +44,10 @@ jobs:
           path: mobile/coverage/lcov.info
           if-no-files-found: ignore
 
+
+  # =========================
+  # FRONTEND
+  # =========================
   frontend:
     name: Frontend - Build, Test & Coverage
     runs-on: ubuntu-latest
@@ -55,7 +62,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22" # Avoid Node 20 deprecation warnings
 
       - name: Install dependencies
         run: npm ci
@@ -63,7 +70,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test with coverage
+      - name: Run tests with coverage
         run: npm test -- --coverage --ci
 
       - name: Upload frontend coverage
@@ -73,6 +80,10 @@ jobs:
           path: implementations/frontend/coverage/lcov.info
           if-no-files-found: ignore
 
+
+  # =========================
+  # BACKEND
+  # =========================
   backend:
     name: Backend - Build, Test & Coverage
     runs-on: ubuntu-latest
@@ -95,7 +106,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test with coverage
+      - name: Run tests with coverage
         run: npm run test:coverage
 
       - name: Upload backend coverage
@@ -104,7 +115,11 @@ jobs:
           name: backend-coverage
           path: implementations/backend/coverage/lcov.info
           if-no-files-found: ignore
-          
+
+
+  # =========================
+  # SONARCLOUD
+  # =========================
   sonar:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
@@ -113,8 +128,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Required for proper new code detection
 
+      # Download coverage artifacts
       - name: Download frontend coverage
         uses: actions/download-artifact@v4
         with:
@@ -144,28 +160,24 @@ jobs:
             -Dsonar.organization=outoft3n
             -Dsonar.projectVersion=${{ github.run_number }}
 
+            # Source code
             -Dsonar.sources=implementations/backend/src,implementations/frontend/src,mobile/lib
 
-            -Dsonar.tests=implementations/backend/src,implementations/frontend, mobile/test
+            # Test locations (NO spaces!)
+            -Dsonar.tests=implementations/backend/src,implementations/frontend,mobile/test
             -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
 
+            # Coverage reports
             -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
             -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
-            
-            -Dsonar.coverage.exclusions=\
-              mobile/lib/screens/**,\
-              mobile/lib/widgets/**,\
-              implementations/frontend/src/app/**,\
-              implementations/frontend/src/components/**,\
-              **/*.tsx,\
-              **/*.jsx
 
-            -Dsonar.exclusions=\
-              **/node_modules/**,\
-              **/*.md,\
-              designs/**,\
-              images/**
+            # Exclude UI-heavy files from coverage calculation
+            -Dsonar.coverage.exclusions=mobile/lib/screens/**,mobile/lib/widgets/**,implementations/frontend/src/app/**,implementations/frontend/src/components/**,**/*.tsx,**/*.jsx
 
+            # General exclusions
+            -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
+
+            # Disable irrelevant languages
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
             -Dsonar.objc.file.suffixes=-
