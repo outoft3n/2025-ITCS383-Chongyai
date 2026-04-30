@@ -168,7 +168,7 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
             -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
 
-            -Dsonar.coverage.exclusions=mobile/lib/screens/**,mobile/lib/widgets/**,implementations/frontend/src/app/**,implementations/frontend/src/components/**,**/*.tsx,**/*.jsx
+            -Dsonar.coverage.exclusions=implementations/frontend/src/app/**,implementations/frontend/src/components/**,**/*.tsx,**/*.jsx
 
             -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
