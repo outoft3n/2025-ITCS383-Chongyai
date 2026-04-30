@@ -38,8 +38,10 @@ app.use(cors({
 
     // Allow any Codespace URL (*.app.github.dev)
     const isCodespace = origin.endsWith('.app.github.dev');
+    // Allow any localhost port (Flutter web uses random ports)
+    const isLocalhost = /^http:\/\/localhost:\d+$/.test(origin);
 
-    if (allowedOrigins.includes(origin) || isCodespace) {
+    if (allowedOrigins.includes(origin) || isCodespace || isLocalhost) {
       callback(null, true);
     } else {
       callback(new Error(`CORS blocked: ${origin}`));
