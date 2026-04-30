@@ -31,4 +31,35 @@ void main() {
     expect(user.createdAt, null);
     expect(user.updatedAt, null);
   });
+
+  test('User.fromJson parses nested profiles and toJson serializes them', () {
+    final json = <String, dynamic>{
+      'id': 'u-2',
+      'email': 'recruiter@email.com',
+      'role': 'RECRUITER',
+      'firstName': 'Rec',
+      'lastName': 'Ruiter',
+      'isVerified': false,
+      'isPaid': true,
+      'applicantProfile': {
+        'id': 'ap-1',
+        'userId': 'u-2',
+        'skills': ['Dart', 'Flutter'],
+        'preferredSalaryMin': 30000.0,
+      },
+      'recruiterProfile': {
+        'id': 'rp-1',
+        'userId': 'u-2',
+        'companyName': 'Cursor Co',
+      },
+    };
+
+    final user = User.fromJson(json);
+    final serialized = user.toJson();
+
+    expect(user.applicantProfile?.preferredSalaryMin, 30000);
+    expect(user.recruiterProfile?.companyName, 'Cursor Co');
+    expect((serialized['applicantProfile'] as Map<String, dynamic>)['skills'], ['Dart', 'Flutter']);
+    expect((serialized['recruiterProfile'] as Map<String, dynamic>)['companyName'], 'Cursor Co');
+  });
 }
