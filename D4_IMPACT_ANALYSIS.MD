@@ -1,15 +1,15 @@
 # D4: Impact Analysis
 
-### Requirements (from D3 Change Requests)
-- R1: Special Character Handling in Job Search (CR-01, Corrective)
-- R2: Fix Publish Announcement Frontend Payload Mismatch (CR-02, Corrective)
-- R3: Flutter Mobile Application — Core Features (CR-03, Adaptive)
-- R4: Flutter Mobile Application — Placeholder Screens (CR-04, Adaptive)
-- R5: Applicant Search & Invitation System (CR-05, Perfective)
-- R6: Similar Jobs Section on Job Detail Page (CR-06, Perfective)
-- R7: Backend Test Coverage Expansion (CR-07, Preventive)
-- R8: CI/CD Pipeline & SonarQube Quality Gate (CR-08, Preventive)
-### Design (C4 Container Diagram — merged)
+### Requirements
+- R1: Special Character Handling in Job Search
+- R2: Fix Publish Announcement Frontend Payload Mismatch
+- R3: Flutter Mobile Application — Core Features
+- R4: Flutter Mobile Application — Placeholder Screens
+- R5: Applicant Search & Invitation System
+- R6: Similar Jobs Section on Job Detail Page
+- R7: Backend Test Coverage Expansion
+- R8: CI/CD Pipeline & SonarQube Quality Gate
+### Design
 - D1: Web Frontend (Next.js)
 - D2: Backend (Express — includes all REST API routes)
 - D3: Chatbot Service
