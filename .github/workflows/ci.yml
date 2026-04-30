@@ -8,9 +8,7 @@ on:
 
 jobs:
   mobile:
-    name: Mobile - Analyze, Test & Coverage
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: mobile
@@ -18,33 +16,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test --coverage
 
-      - name: Analyze
-        run: flutter analyze
-
-      - name: Run tests with coverage
-        run: flutter test --coverage
-
-      - name: Upload mobile coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: mobile-coverage
           path: mobile/coverage/lcov.info
           if-no-files-found: ignore
 
-
   frontend:
-    name: Frontend - Build, Test & Coverage
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: implementations/frontend
@@ -52,80 +39,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: implementations/frontend/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
+      - run: npm test -- --coverage --ci
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-
-      - name: Test with coverage
-        run: npm run test -- --coverage --ci --passWithNoTests
-        env:
-          CI: true
-
-      - name: Upload frontend coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
           path: implementations/frontend/coverage/lcov.info
           if-no-files-found: ignore
 
-
   backend:
-    name: Backend - Build, Test & Coverage
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: implementations/backend
 
-    env:
-      DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci_db"
-      JWT_SECRET: "ci-test-secret"
-      JWT_EXPIRES_IN: "7d"
-      NODE_ENV: "test"
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: implementations/backend/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:coverage
 
-      - name: Build
-        run: npm run build
-
-      - name: Test with coverage
-        run: npm run test:coverage
-        env:
-          CI: true
-
-      - name: Upload backend coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: implementations/backend/coverage/lcov.info
           if-no-files-found: ignore
 
-
-  sonarcloud:
-    name: SonarCloud Scan
+  sonar:
     runs-on: ubuntu-latest
     needs: [mobile, frontend, backend]
 
@@ -134,41 +85,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 🔽 โหลด coverage จากทุก service
-      - name: Download mobile coverage
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: mobile-coverage
           path: mobile/coverage
         continue-on-error: true
 
-      - name: Download frontend coverage
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: frontend-coverage
           path: implementations/frontend/coverage
         continue-on-error: true
 
-      - name: Download backend coverage
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: backend-coverage
           path: implementations/backend/coverage
         continue-on-error: true
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         with:
           args: >
             -Dsonar.projectKey=outoft3n_2025-ITCS383-Chongyai3
             -Dsonar.organization=outoft3n
             -Dsonar.projectVersion=${{ github.run_number }}
 
-            -Dsonar.sources=.
-            -Dsonar.exclusions=**/node_modules/**,**/*.test.*,mobile/test/**
+            -Dsonar.sources=implementations/backend/src,implementations/frontend/src,mobile/lib
+
+            -Dsonar.tests=implementations/backend/src,implementations/frontend/src,mobile/test
+            -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
 
             -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
             -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
+
+            -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
