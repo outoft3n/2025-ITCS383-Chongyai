@@ -1,142 +1,142 @@
-# D3: Change Request Analysis
+# D3 Change Request Analysis
 
 **Project:** Job Center Management System  
-**Group:** Chongyai (Maintainer)  
-**Product Owner:** JianCha  
 
-## Features Overview
+---
 
-| Feature | Description |
-|---------|-------------|
-| Feature 1 | **Mobile Client App** — Native Android app (Flutter) replicating all web functionalities |
-| Feature 2 | **Applicant Search & Invitation System** — Recruiters search/filter applicants and send job invitations |
-| Feature 3 | **Job Recommendation System** — System recommends similar jobs after applicant views a job |
+## Change Request Distribution
+
+| Type of Change | Number of Change Requests |
+|----------------|--------------------------|
+| Corrective     | 2                        |
+| Adaptive       | 2                        |
+| Perfective     | 2                        |
+| Preventive     | 2                        |
+| **Total**      | **8**                    |
 
 ---
 
 ## Change Requests
 
-### CR-1: Search returns no results when query contains special characters
+---
 
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 2 — Applicant Search & Invitation System |
-| **Description** | When a recruiter searches for applicants using queries that contain special characters such as `%`, `&`, `@`, or `+`, the search returns no results or throws an unhandled error. These characters are not properly sanitized or escaped before being passed to the Prisma query, causing the `contains` filter to behave incorrectly. |
-| **Maintenance Type** | Corrective |
-| **Priority** | High |
-| **Severity** | Critical |
-| **Time to Implement** | 0.5 person-weeks |
-| **Verification Method** | Testing — unit tests with special character inputs to verify correct filtering behavior |
+### CR-01 — Fix expiresAt Type Mismatch
+
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-01 |
+| **Associated Feature** | Job Creation / Backend API |
+| **Description**        | Fixed a type mismatch issue for the expiresAt field during job creation. Previously, the field was validated as a string (datetime format) and passed directly to the database layer. Since the database (Prisma) expects a Date object, the value is now converted to a Date before being persisted. |
+| **Maintenance Type**   | Corrective |
+| **Priority**           | High |
+| **Severity**           | High |
+| **Time to Implement**  | 0.1 person-week |
+| **Verification Method** | Testing and Inspection |
 
 ---
 
-### CR-2: Invitation status does not update in real-time on the recruiter's sent list
+### CR-02 — Fix CORS Configuration
 
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 2 — Applicant Search & Invitation System |
-| **Description** | After an applicant accepts or rejects an invitation, the recruiter's "Sent Invitations" page still shows the old status (PENDING) until the page is manually refreshed. The frontend `useInvitations` hook does not re-fetch data after a status change event, causing stale data to be displayed. |
-| **Maintenance Type** | Corrective |
-| **Priority** | Medium |
-| **Severity** | Major |
-| **Time to Implement** | 0.5 person-weeks |
-| **Verification Method** | Testing — verify UI updates after status change without manual refresh; integration test on hook re-fetch logic |
-
----
-
-### CR-3: Add native Android mobile client platform
-
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 1 — Mobile Client App |
-| **Description** | A new native Android client must be built using Flutter to replicate all user-facing functionalities of the existing Next.js web application, including authentication, job browsing, applications, bookmarks, interviews, chat, invitations, and recommendations. The mobile app communicates with the existing backend API. A new repository is created for the mobile app, and the link is added to the main repository's README.md. |
-| **Maintenance Type** | Adaptive |
-| **Priority** | High |
-| **Severity** | Critical |
-| **Time to Implement** | 3 person-weeks |
-| **Verification Method** | Testing and inspection — manual testing on Android emulator/device, API integration tests, and code review |
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-02 |
+| **Associated Feature** | CORS Configuration |
+| **Description**        | Fixed CORS configuration to dynamically allow requests from FRONTEND_URL and localhost origins instead of using hardcoded values. This improves flexibility across different environments (development and production) and prevents cross-origin request issues. |
+| **Maintenance Type**   | Corrective |
+| **Priority**           | High |
+| **Severity**           | High |
+| **Time to Implement**  | 0.1 person-week |
+| **Verification Method** | Testing and Inspection |
 
 ---
 
-### CR-4: Configure backend CORS and API to support mobile client
+### CR-03 — Flutter Mobile Application 
 
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 1 — Mobile Client App |
-| **Description** | The existing backend Express.js server needs to be updated to accept API requests from the mobile client. This includes updating CORS configuration to allow requests from mobile origins, ensuring JWT token-based authentication works correctly with mobile HTTP clients (no cookies), and verifying that all API response formats are compatible with the Flutter HTTP/Dio client. |
-| **Maintenance Type** | Adaptive |
-| **Priority** | High |
-| **Severity** | Major |
-| **Time to Implement** | 0.5 person-weeks |
-| **Verification Method** | Testing — verify mobile client can successfully call all endpoints; automated API tests from a non-browser client |
-
----
-
-### CR-5: Implement job recommendation display on job detail page
-
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 3 — Job Recommendation System |
-| **Description** | When an applicant views a job detail page, the system should display a "Similar Jobs" section below the job description. This section calls the `/recommendations/similar/:jobId` endpoint and renders up to 5 recommended jobs based on matching skills and job type. The section must appear on both web (`/dashboard/applicant/jobs/[id]`) and mobile (`job_detail_screen.dart`) platforms. |
-| **Maintenance Type** | Perfective |
-| **Priority** | Medium |
-| **Severity** | Minor |
-| **Time to Implement** | 1 person-week |
-| **Verification Method** | Testing — verify recommendations appear correctly; unit test for recommendation hook/provider |
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-03 |
+| **Associated Feature** | Mobile Client App |
+| **Description**        | Built a Flutter mobile app from scratch supporting all three roles. Applicant can browse and search jobs, apply, bookmark, track applications, view interviews, and manage invitations. Recruiter can post and manage jobs, review applicants, manage interviews, and search applicants. Admin has access to dashboard, users, jobs, payments, and reports. The app uses role-based navigation, state management, and secure token storage. |
+| **Maintenance Type**   | Adaptive |
+| **Priority**           | High |
+| **Severity**           | Medium |
+| **Time to Implement**  | 1.5 person-week |
+| **Verification Method** | Testing and Inspection |
 
 ---
 
-### CR-6: Improve applicant search with relevance scoring and result sorting
+### CR-04 — Add render.yaml for render cloud deployment
 
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 2 — Applicant Search & Invitation System |
-| **Description** | The current `/search/applicants` endpoint returns results sorted only by `createdAt`. Recruiters need the ability to sort results by relevance (number of matching skills), by name, or by experience. A `sortBy` query parameter should be added to support `relevance`, `name`, and `newest` options. When sorted by relevance, applicants with more matching skills should appear first. |
-| **Maintenance Type** | Perfective |
-| **Priority** | Medium |
-| **Severity** | Minor |
-| **Time to Implement** | 1 person-week |
-| **Verification Method** | Testing — verify sort order with different `sortBy` values; unit tests for sorting logic |
-
----
-
-### CR-7: Refactor route handlers to extract business logic into service layer
-
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | All Features (General) |
-| **Description** | Currently, all business logic (database queries, validation, scoring) is implemented directly inside Express route handlers. This makes unit testing difficult and increases coupling. Business logic should be extracted into separate service files (e.g., `search.service.ts`, `invitation.service.ts`, `recommendation.service.ts`) so that route handlers only handle HTTP request/response concerns. This refactoring does not change any external behavior but improves testability and maintainability. |
-| **Maintenance Type** | Preventive |
-| **Priority** | Low |
-| **Severity** | Minor |
-| **Time to Implement** | 1.5 person-weeks |
-| **Verification Method** | Inspection and testing — code review to verify separation; all existing tests must still pass after refactoring |
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-04 |
+| **Associated Feature** | Deployment & DevOps Configuration |
+| **Description**        | Added a render.yaml configuration file to enable automated deployment on Render cloud platform. The file defines services, environment variables, build commands, and start commands for the application. This improves deployment consistency, reduces manual setup, and supports scalable cloud hosting. |
+| **Maintenance Type**   | Adaptive |
+| **Priority**           | Medium |
+| **Severity**           | Low |
+| **Time to Implement**  | 0.1 person-week |
+| **Verification Method** | Deployment testing on Render and configuration inspection |
 
 ---
 
-### CR-8: Add comprehensive input validation for invitation and recommendation endpoints
+### CR-05 — Add Applicant Search & Invitation System
 
-| Attribute | Description |
-|-----------|-------------|
-| **Associated Feature** | Feature 2 & Feature 3 |
-| **Description** | The recommendation endpoints (`/recommendations/` and `/recommendations/similar/:jobId`) currently have no input validation middleware. The `jobId` parameter is not validated as a proper CUID before being used in a database query, which could lead to unhandled Prisma errors. Similarly, the search applicant endpoint does not validate that `page` and `limit` are valid numbers (non-NaN). Zod validation schemas should be added to these endpoints, consistent with the pattern already used in `invitations.routes.ts`. |
-| **Maintenance Type** | Preventive |
-| **Priority** | Medium |
-| **Severity** | Major |
-| **Time to Implement** | 0.5 person-weeks |
-| **Verification Method** | Testing — unit tests with invalid inputs (empty strings, SQL injection attempts, NaN values) to verify proper error responses |
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-05 |
+| **Associated Feature** | Applicant Search & Invitation System |
+| **Description**        | Added invitation system on web and mobile. Web includes recruiter search with invite modal, sent/received invitation pages, and hooks for both roles. Mobile includes recruiter search, and invitation tabs for both recruiter and applicant with Accept/Decline flow. |
+| **Maintenance Type**   | Perfective |
+| **Priority**           | High |
+| **Severity**           | High |
+| **Time to Implement**  | 0.4 person-week |
+| **Verification Method** | Testing and Inspection |
 
 ---
 
-## Summary Table
+### CR-06 — Add Similar Jobs Recommendation Feature
 
-| CR | Associated Feature | Type | Priority | Severity |
-|----|-------------------|------|----------|----------|
-| CR-1 | Feature 2 — Search & Invitation | Corrective | High | Critical |
-| CR-2 | Feature 2 — Search & Invitation | Corrective | Medium | Major |
-| CR-3 | Feature 1 — Mobile Client App | Adaptive | High | Critical |
-| CR-4 | Feature 1 — Mobile Client App | Adaptive | High | Major |
-| CR-5 | Feature 3 — Job Recommendation | Perfective | Medium | Minor |
-| CR-6 | Feature 2 — Search & Invitation | Perfective | Medium | Minor |
-| CR-7 | All Features | Preventive | Low | Minor |
-| CR-8 | Feature 2 & Feature 3 | Preventive | Medium | Major |
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-06 |
+| **Associated Feature** | Job Recommendation |
+| **Description**        | Added a similar jobs feature on the job detail page. It fetches related jobs and displays them as job cards in a two-column grid below the main job content. The section only appears when similar jobs are available. |
+| **Maintenance Type**   | Perfective |
+| **Priority**           | Medium |
+| **Severity**           | Low |
+| **Time to Implement**  | 0.3 person-week |
+| **Verification Method** | Testing and Inspection |
+
+---
+
+### CR-07 — Add SonarQube Code Coverage Analysis
+
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-07 |
+| **Associated Feature** | Code Quality & Testing |
+| **Description**        | Integrated SonarQube for code coverage analysis to monitor and evaluate test coverage across the application. This helps identify untested or low-quality code areas and prevents potential defects by enforcing better code quality and coverage standards. |
+| **Maintenance Type**   | Preventive |
+| **Priority**           | Medium |
+| **Severity**           | Low |
+| **Time to Implement**  | 0.4 person-week |
+| **Verification Method** | Testing and Inspection |
+
+---
+
+### CR-08 — Add Backend tests module
+
+| Attribute              | Description |
+|------------------------|-------------|
+| **CR ID**              | CR-08 |
+| **Associated Feature** | Backend Testing Module |
+| **Description**        | Added a backend testing module to support structured testing of core application logic and services. This improves code reliability, helps detect defects early, and ensures that backend functionalities behave as expected under different scenarios. |
+| **Maintenance Type**   | Preventive |
+| **Priority**           | High |
+| **Severity**           | Medium |
+| **Time to Implement**  | 0.4 person-week |
+| **Verification Method** | Testing and Inspection |
+
+
+
