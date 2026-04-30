@@ -59,8 +59,8 @@
 | **Description**        | Built a Flutter mobile app from scratch supporting all three roles. Applicant can browse and search jobs, apply, bookmark, track applications, view interviews, and manage invitations. Recruiter can post and manage jobs, review applicants, manage interviews, and search applicants. Admin has access to dashboard, users, jobs, payments, and reports. The app uses role-based navigation, state management, and secure token storage. |
 | **Maintenance Type**   | Adaptive |
 | **Priority**           | High |
-| **Severity**           | High |
-| **Time to Implement**  | 0.6 person-weeks |
+| **Severity**           | Medium |
+| **Time to Implement**  | 1.5 person-weeks |
 | **Verification Method** | Testing and Inspection |
 
 ---
@@ -125,7 +125,7 @@
 
 ---
 
-### CR-08 — Add Backend tests module
+### CR-0ึ8 — Add Backend tests module
 
 | Attribute              | Description |
 |------------------------|-------------|
@@ -134,7 +134,7 @@
 | **Description**        | Added a backend testing module to support structured testing of core application logic and services. This improves code reliability, helps detect defects early, and ensures that backend functionalities behave as expected under different scenarios. |
 | **Maintenance Type**   | Preventive |
 | **Priority**           | High |
-| **Severity**           | High |
+| **Severity**           | Medium |
 | **Time to Implement**  | 0.4 person-week |
 | **Verification Method** | Testing and Inspection |
 
