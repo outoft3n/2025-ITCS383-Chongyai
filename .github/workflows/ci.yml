@@ -11,9 +11,7 @@ jobs:
   # MOBILE
   # =========================
   mobile:
-    name: Mobile - Analyze & Coverage
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: mobile
@@ -51,9 +49,7 @@ jobs:
   # FRONTEND
   # =========================
   frontend:
-    name: Frontend - Build, Test & Coverage
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: implementations/frontend
@@ -61,11 +57,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
+<<<<<<< HEAD
           node-version: "20"
           
+=======
+          node-version: 20
+
+>>>>>>> ea32986 (update ci.yml config)
       - name: Install dependencies
         run: npm ci
 
@@ -74,6 +75,14 @@ jobs:
 
       - name: Run tests with coverage
         run: npm test -- --coverage --ci --watchAll=false
+<<<<<<< HEAD
+=======
+
+      - name: Debug coverage (frontend)
+        run: |
+          ls -R coverage || true
+          head -20 coverage/lcov.info || true
+>>>>>>> ea32986 (update ci.yml config)
 
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
@@ -87,9 +96,7 @@ jobs:
   # BACKEND
   # =========================
   backend:
-    name: Backend - Build, Test & Coverage
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: implementations/backend
@@ -97,10 +104,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
+<<<<<<< HEAD
           node-version: "20"
+=======
+          node-version: 20
+>>>>>>> ea32986 (update ci.yml config)
 
       - name: Install dependencies
         run: npm ci
@@ -110,6 +121,11 @@ jobs:
 
       - name: Run tests with coverage
         run: npm run test:coverage
+
+      - name: Debug coverage (backend)
+        run: |
+          ls -R coverage || true
+          head -20 coverage/lcov.info || true
 
       - name: Upload backend coverage
         uses: actions/upload-artifact@v4
@@ -123,7 +139,6 @@ jobs:
   # SONAR
   # =========================
   sonar:
-    name: SonarCloud Scan
     runs-on: ubuntu-latest
     needs: [mobile, frontend, backend]
 
@@ -132,9 +147,12 @@ jobs:
         with:
           fetch-depth: 0
 
+<<<<<<< HEAD
       # =====================
       # DOWNLOAD COVERAGE
       # =====================
+=======
+>>>>>>> ea32986 (update ci.yml config)
       - name: Download frontend coverage
         uses: actions/download-artifact@v4
         with:
@@ -153,6 +171,7 @@ jobs:
           name: mobile-coverage
           path: mobile/coverage
 
+<<<<<<< HEAD
       - name: Verify coverage files
         run: |
           ls -R implementations/frontend/coverage || true
@@ -162,10 +181,24 @@ jobs:
       # =====================
       # SONAR SCAN
       # =====================
+=======
+      - name: Debug all coverage (before sonar)
+        run: |
+          echo "=== FRONTEND ==="
+          ls -R implementations/frontend/coverage || true
+          echo "=== BACKEND ==="
+          ls -R implementations/backend/coverage || true
+          echo "=== MOBILE ==="
+          ls -R mobile/coverage || true
+
+>>>>>>> ea32986 (update ci.yml config)
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: >
+          args: |
             -Dsonar.projectKey=outoft3n_2025-ITCS383-Chongyai3
             -Dsonar.organization=outoft3n
             -Dsonar.projectVersion=${{ github.run_number }}
@@ -184,7 +217,3 @@ jobs:
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
             -Dsonar.objc.file.suffixes=-
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
