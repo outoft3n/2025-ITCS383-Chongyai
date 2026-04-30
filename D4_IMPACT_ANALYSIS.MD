@@ -689,7 +689,7 @@ Each node represents a backend code module (SLO). An edge `A → B` means module
 ---
  
 ## Connectivity Matrix
-
+ 
 | | SLO1 | SLO2 | SLO3 | SLO4 | SLO5 | SLO6 | SLO7 | SLO8 | SLO9 | SLO10 | SLO11 | SLO12 | SLO13 | SLO14 |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **SLO1** | - | | | | | | | | | | | | | |
@@ -706,7 +706,7 @@ Each node represents a backend code module (SLO). An edge `A → B` means module
 | **SLO12** | 1 | 1 | 1 | 1 | | | | 1 | | | | - | | |
 | **SLO13** | 1 | 1 | 1 | 1 | | | | | | | | | - | |
 | **SLO14** | 1 | 1 | 1 | 1 | | | | | | | | | | - |
-
+ 
 ---
 
 ## Analysis
