@@ -690,6 +690,10 @@ C14 --> C2
 C14 --> C3
 C14 --> C4
 C14 -.-> T4
+```
+---
+
+### R8: Backend Test Coverage Expansion
 
 ```mermaid
 graph LR
