@@ -335,6 +335,7 @@ class _SearchTabState extends State<SearchTab> {
   }
 
   void _showInviteDialog(Map<String, dynamic> applicant) {
+    final parentContext = context;
     final messageController = TextEditingController();
     List<Job> jobs = [];
     Job? selectedJob;
@@ -344,7 +345,7 @@ class _SearchTabState extends State<SearchTab> {
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) {
+        builder: (dialogBuildContext, setDialogState) {
           Future<void> loadJobsIfNeeded() async {
             if (!isLoadingJobs) return;
             try {
@@ -383,7 +384,7 @@ class _SearchTabState extends State<SearchTab> {
                     const Text('No active jobs available. Please post a job first.')
                   else
                     DropdownButtonFormField<Job>(
-                      value: selectedJob,
+                      initialValue: selectedJob,
                       decoration: const InputDecoration(
                         labelText: 'Select job',
                         border: OutlineInputBorder(),
@@ -428,16 +429,19 @@ class _SearchTabState extends State<SearchTab> {
                             jobId: selectedJob!.id,
                             message: messageController.text.trim().isEmpty ? null : messageController.text.trim(),
                           );
+                          if (!dialogContext.mounted) return;
+                          Navigator.of(dialogContext).pop();
                           if (!mounted) return;
-                          Navigator.pop(dialogContext);
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.of(parentContext).showSnackBar(
                             const SnackBar(content: Text('Invitation sent successfully')),
                           );
                         } catch (e) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          if (!dialogBuildContext.mounted) return;
+                          if (mounted) {
+                            ScaffoldMessenger.of(parentContext).showSnackBar(
                             SnackBar(content: Text('Failed to send invitation: $e')),
-                          );
+                            );
+                          }
                           setDialogState(() => isSending = false);
                         }
                       },
