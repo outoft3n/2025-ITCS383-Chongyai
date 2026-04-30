@@ -8,7 +8,7 @@ on:
 
 jobs:
   mobile:
-    name: Mobile - Analyze only
+    name: Mobile - Analyze & Test
     runs-on: ubuntu-latest
 
     defaults:
@@ -26,8 +26,19 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
+      - name: Analyze (non-blocking)
         run: flutter analyze
+        continue-on-error: true
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload mobile coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-coverage
+          path: mobile/coverage/lcov.info
+          if-no-files-found: ignore
 
 
   frontend:
@@ -41,22 +52,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
+      - run: npm test -- --coverage --ci
 
-      - name: Build
-        run: npm run build
-
-      - name: Test with coverage
-        run: npm test -- --coverage --ci
-
-      - name: Upload frontend coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
           path: implementations/frontend/coverage/lcov.info
@@ -74,22 +78,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:coverage
 
-      - name: Build
-        run: npm run build
-
-      - name: Test with coverage
-        run: npm run test:coverage
-
-      - name: Upload backend coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: implementations/backend/coverage/lcov.info
@@ -106,15 +103,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download frontend coverage
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile-coverage
+          path: mobile/coverage
+        continue-on-error: true
+
+      - uses: actions/download-artifact@v4
         with:
           name: frontend-coverage
           path: implementations/frontend/coverage
         continue-on-error: true
 
-      - name: Download backend coverage
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: backend-coverage
           path: implementations/backend/coverage
@@ -127,15 +128,14 @@ jobs:
             -Dsonar.projectKey=outoft3n_2025-ITCS383-Chongyai3
             -Dsonar.organization=outoft3n
             -Dsonar.projectVersion=${{ github.run_number }}
-            
+
             -Dsonar.sources=implementations/backend/src,implementations/frontend/src,mobile/lib
 
-            -Dsonar.tests=implementations/backend/src
+            -Dsonar.tests=implementations/backend/src,implementations/frontend/src,mobile/test
             -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
 
-            -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info
-
-            -Dsonar.coverage.exclusions=implementations/frontend/**,mobile/**
+            -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
+            -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
 
             -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
