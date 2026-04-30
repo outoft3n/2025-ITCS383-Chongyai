@@ -2,7 +2,7 @@
 
 ## Artifact Legend
 
-### Requirements (from 3 PO Features)
+### Requirements (from 3 Features)
 
 **Feature 1 — Mobile Client App (Mandatory)**
 - R1: Mobile App Core Features
