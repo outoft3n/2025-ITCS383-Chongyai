@@ -30,7 +30,7 @@
 | **Maintenance Type**   | Corrective |
 | **Priority**           | High |
 | **Severity**           | High |
-| **Time to Implement**  | 0.1 person-weeks |
+| **Time to Implement**  | 0.1 person-week |
 | **Verification Method** | Testing and Inspection |
 
 ---
@@ -60,7 +60,7 @@
 | **Maintenance Type**   | Adaptive |
 | **Priority**           | High |
 | **Severity**           | Medium |
-| **Time to Implement**  | 1.5 person-weeks |
+| **Time to Implement**  | 1.5 person-week |
 | **Verification Method** | Testing and Inspection |
 
 ---
@@ -75,7 +75,7 @@
 | **Maintenance Type**   | Adaptive |
 | **Priority**           | Medium |
 | **Severity**           | Low |
-| **Time to Implement**  | 0.1 person-weeks |
+| **Time to Implement**  | 0.1 person-week |
 | **Verification Method** | Deployment testing on Render and configuration inspection |
 
 ---
@@ -90,7 +90,7 @@
 | **Maintenance Type**   | Perfective |
 | **Priority**           | High |
 | **Severity**           | High |
-| **Time to Implement**  | 0.4 person-weeks |
+| **Time to Implement**  | 0.4 person-week |
 | **Verification Method** | Testing and Inspection |
 
 ---
@@ -125,7 +125,7 @@
 
 ---
 
-### CR-0ึ8 — Add Backend tests module
+### CR-08 — Add Backend tests module
 
 | Attribute              | Description |
 |------------------------|-------------|
