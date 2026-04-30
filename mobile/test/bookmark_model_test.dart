@@ -1,5 +1,4 @@
 import 'package:chongyai_mobile/models/bookmark.dart';
-import 'package:chongyai_mobile/models/job.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
