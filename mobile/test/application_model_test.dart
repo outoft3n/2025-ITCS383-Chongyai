@@ -43,4 +43,26 @@ void main() {
     expect(application.job?.title, 'Backend Developer');
     expect(application.applicant?.email, 'applicant@email.com');
   });
+
+  test('Application.toJson keeps nullable nested fields when absent', () {
+    final json = <String, dynamic>{
+      'id': 'app-2',
+      'applicantId': 'user-2',
+      'jobId': 'job-2',
+      'status': 'ACCEPTED',
+      'createdAt': '2026-04-19T10:00:00.000Z',
+      'updatedAt': '2026-04-19T10:10:00.000Z',
+      'job': null,
+      'applicant': null,
+    };
+
+    final application = Application.fromJson(json);
+    final serialized = application.toJson();
+
+    expect(application.coverLetter, isNull);
+    expect(application.job, isNull);
+    expect(application.applicant, isNull);
+    expect(serialized['job'], isNull);
+    expect(serialized['applicant'], isNull);
+  });
 }
