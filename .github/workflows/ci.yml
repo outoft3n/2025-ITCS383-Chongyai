@@ -62,7 +62,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22" # Avoid Node 20 deprecation warnings
+          node-version: "22"
 
       - name: Install dependencies
         run: npm ci
@@ -128,7 +128,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Required for proper new code detection
+          fetch-depth: 0
 
       # Download coverage artifacts
       - name: Download frontend coverage
@@ -160,24 +160,18 @@ jobs:
             -Dsonar.organization=outoft3n
             -Dsonar.projectVersion=${{ github.run_number }}
 
-            # Source code
             -Dsonar.sources=implementations/backend/src,implementations/frontend/src,mobile/lib
 
-            # Test locations (NO spaces!)
             -Dsonar.tests=implementations/backend/src,implementations/frontend,mobile/test
             -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
 
-            # Coverage reports
             -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
             -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
 
-            # Exclude UI-heavy files from coverage calculation
             -Dsonar.coverage.exclusions=mobile/lib/screens/**,mobile/lib/widgets/**,implementations/frontend/src/app/**,implementations/frontend/src/components/**,**/*.tsx,**/*.jsx
 
-            # General exclusions
             -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
-            # Disable irrelevant languages
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
             -Dsonar.objc.file.suffixes=-
