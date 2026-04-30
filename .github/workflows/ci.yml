@@ -127,15 +127,15 @@ jobs:
             -Dsonar.projectKey=outoft3n_2025-ITCS383-Chongyai3
             -Dsonar.organization=outoft3n
             -Dsonar.projectVersion=${{ github.run_number }}
-
+            
             -Dsonar.sources=implementations/backend/src,implementations/frontend/src,mobile/lib
 
-            -Dsonar.tests=implementations/backend/src,implementations/frontend/src
+            -Dsonar.tests=implementations/backend/src
             -Dsonar.test.inclusions=**/*.test.*,**/*.spec.*
 
-            -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info
 
-            -Dsonar.coverage.exclusions=mobile/**
+            -Dsonar.coverage.exclusions=implementations/frontend/**,mobile/**
 
             -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
