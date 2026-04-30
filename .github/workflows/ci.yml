@@ -29,20 +29,22 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Allow warnings without failing the pipeline
       - name: Analyze
         run: flutter analyze
         continue-on-error: true
-
+        
       - name: Run tests with coverage
         run: flutter test --coverage
+
+      - name: Check coverage file
+        run: ls -la coverage
 
       - name: Upload mobile coverage
         uses: actions/upload-artifact@v4
         with:
           name: mobile-coverage
           path: mobile/coverage/lcov.info
-          if-no-files-found: ignore
+          if-no-files-found: error
 
 
   # =========================
@@ -62,8 +64,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-
+          node-version: "20"
+          
       - name: Install dependencies
         run: npm ci
 
@@ -71,14 +73,14 @@ jobs:
         run: npm run build
 
       - name: Run tests with coverage
-        run: npm test -- --coverage --ci
+        run: npm test -- --coverage --ci --watchAll=false
 
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
           path: implementations/frontend/coverage/lcov.info
-          if-no-files-found: ignore
+          if-no-files-found: error
 
 
   # =========================
@@ -98,7 +100,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -114,11 +116,11 @@ jobs:
         with:
           name: backend-coverage
           path: implementations/backend/coverage/lcov.info
-          if-no-files-found: ignore
+          if-no-files-found: error
 
 
   # =========================
-  # SONARCLOUD
+  # SONAR
   # =========================
   sonar:
     name: SonarCloud Scan
@@ -130,28 +132,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Download coverage artifacts
+      # =====================
+      # DOWNLOAD COVERAGE
+      # =====================
       - name: Download frontend coverage
         uses: actions/download-artifact@v4
         with:
           name: frontend-coverage
           path: implementations/frontend/coverage
-        continue-on-error: true
 
       - name: Download backend coverage
         uses: actions/download-artifact@v4
         with:
           name: backend-coverage
           path: implementations/backend/coverage
-        continue-on-error: true
 
       - name: Download mobile coverage
         uses: actions/download-artifact@v4
         with:
           name: mobile-coverage
           path: mobile/coverage
-        continue-on-error: true
 
+      - name: Verify coverage files
+        run: |
+          ls -R implementations/frontend/coverage || true
+          ls -R implementations/backend/coverage || true
+          ls -R mobile/coverage || true
+
+      # =====================
+      # SONAR SCAN
+      # =====================
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         with:
@@ -168,8 +178,7 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=implementations/backend/coverage/lcov.info,implementations/frontend/coverage/lcov.info
             -Dsonar.dart.lcov.reportPaths=mobile/coverage/lcov.info
 
-            -Dsonar.coverage.exclusions=implementations/frontend/src/app/**,implementations/frontend/src/components/**,**/*.tsx,**/*.jsx
-
+            -Dsonar.coverage.exclusions=**/*.tsx,**/*.jsx
             -Dsonar.exclusions=**/node_modules/**,**/*.md,designs/**,images/**
 
             -Dsonar.c.file.suffixes=-
